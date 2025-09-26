@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AfghanPawer - Crypto Investment</title>
+    <title>AfghanPawer - Crypto Investment Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         * {
@@ -40,69 +40,211 @@
         }
 
         .container {
-            max-width: 400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
 
+        /* Header Styles */
         header {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: white;
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            color: white;
-            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
         }
 
         .logo {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
         }
 
-        h1 {
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+
+        .logo h1 {
             font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        nav ul li a:hover {
+            background: #f8f9fa;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Auth Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
             margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin-top: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background-color: white;
+            background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
-            color: var(--primary);
+            color: white;
             font-size: 1.5rem;
-            overflow: hidden;
         }
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .user-details h2 {
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: var(--gray);
         }
 
         .vip-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
             background: var(--vip1);
             color: var(--dark);
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: bold;
+            margin-left: auto;
         }
 
         .balance-card {
@@ -176,7 +318,7 @@
             color: var(--primary);
         }
 
-        .vip-section {
+        .vip-section, .daily-profit-section, .referral-section, .recharge-section, .history-section {
             background: white;
             border-radius: 15px;
             padding: 20px;
@@ -205,21 +347,10 @@
             background: rgba(138, 43, 226, 0.1);
         }
 
-        .vip-level.vip1 {
-            border-color: var(--vip1);
-        }
-
-        .vip-level.vip2 {
-            border-color: var(--vip2);
-        }
-
-        .vip-level.vip3 {
-            border-color: var(--vip3);
-        }
-
-        .vip-level.vip4 {
-            border-color: var(--vip4);
-        }
+        .vip-level.vip1 { border-color: var(--vip1); }
+        .vip-level.vip2 { border-color: var(--vip2); }
+        .vip-level.vip3 { border-color: var(--vip3); }
+        .vip-level.vip4 { border-color: var(--vip4); }
 
         .vip-name {
             font-weight: bold;
@@ -237,46 +368,8 @@
             color: var(--success);
         }
 
-        .vip-btn {
+        .vip-btn, .profit-btn, .recharge-btn {
             background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            width: 100%;
-            margin-top: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .vip-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .vip-btn:disabled {
-            background: var(--gray);
-            cursor: not-allowed;
-        }
-
-        .daily-profit-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-
-        .profit-timer {
-            font-size: 1.2rem;
-            margin: 15px 0;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .profit-btn {
-            background: var(--success);
             color: white;
             border: none;
             border-radius: 10px;
@@ -286,23 +379,24 @@
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s;
+            margin-top: 15px;
         }
 
-        .profit-btn:hover {
-            background: #218838;
+        .vip-btn:hover, .profit-btn:hover, .recharge-btn:hover {
+            background: var(--primary-dark);
         }
 
-        .profit-btn:disabled {
+        .vip-btn:disabled, .profit-btn:disabled {
             background: var(--gray);
             cursor: not-allowed;
         }
 
-        .referral-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        .profit-timer {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            color: var(--primary);
+            font-weight: bold;
+            text-align: center;
         }
 
         .referral-code {
@@ -364,14 +458,6 @@
             color: var(--gray);
         }
 
-        .recharge-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
         .recharge-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -404,11 +490,6 @@
             margin-bottom: 5px;
         }
 
-        .recharge-bonus {
-            font-size: 0.8rem;
-            color: var(--success);
-        }
-
         .recharge-address {
             background: #f8f9fa;
             border-radius: 10px;
@@ -419,31 +500,6 @@
             word-break: break-all;
             border: 1px dashed var(--primary);
             text-align: center;
-        }
-
-        .recharge-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 15px;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .recharge-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .history-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .history-tabs {
@@ -502,51 +558,7 @@
             padding: 20px;
             color: var(--gray);
             font-size: 0.8rem;
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
+            margin-top: 30px;
         }
 
         /* Animation */
@@ -560,28 +572,22 @@
         }
 
         /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .container {
-                padding: 10px;
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .actions {
-                grid-template-columns: 1fr;
+            nav ul {
+                margin: 15px 0;
+                justify-content: center;
             }
             
-            .vip-levels {
-                grid-template-columns: 1fr;
+            .auth-buttons {
+                justify-content: center;
             }
             
-            .referral-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .recharge-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .referral-actions {
+            .vip-levels, .actions, .referral-stats, .recharge-options, .referral-actions {
                 grid-template-columns: 1fr;
             }
         }
@@ -591,181 +597,315 @@
             padding: 20px;
             color: var(--gray);
         }
+
+        .user-address {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <div class="container">
         <header>
             <div class="logo">
                 <i class="fas fa-paw"></i>
+                <h1>AfghanPawer</h1>
             </div>
-            <h1>AfghanPawer</h1>
-            <p>Crypto Investment & Rewards</p>
-            
-            <div class="user-info">
-                <div class="avatar" id="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-details">
-                    <div class="username" id="username">Loading...</div>
-                    <div class="user-id" id="user-id">ID: Loading...</div>
-                </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">About</a></li>
+                    <li><a href="#" class="nav-link" data-page="contact">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" id="login-btn">Login</button>
+                <button class="btn btn-primary" id="register-btn">Register</button>
             </div>
-            <div class="vip-badge" id="vip-badge">No VIP</div>
         </header>
 
-        <div class="balance-card">
-            <div class="balance-label">Your Balance</div>
-            <div class="balance-amount">$<span id="balance">0.00</span></div>
-            <div class="balance-label">Available for withdrawal</div>
-        </div>
+        <!-- Main Content (Changes based on authentication) -->
+        <main id="main-content">
+            <!-- Home Page (Visible when not logged in) -->
+            <section id="home-page" class="page active">
+                <div class="balance-card">
+                    <div class="balance-label">Welcome to AfghanPawer</div>
+                    <div class="balance-amount">Crypto Investment Platform</div>
+                    <div class="balance-label">Register now to start earning daily profits with our VIP system</div>
+                </div>
 
-        <div class="actions">
-            <div class="action-btn" id="recharge-btn">
-                <div class="action-icon">
-                    <i class="fas fa-plus-circle"></i>
+                <div class="actions">
+                    <div class="action-btn">
+                        <div class="action-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="action-label">VIP System</div>
+                        <div class="action-desc">Earn 3-4% daily profits</div>
+                    </div>
+                    <div class="action-btn">
+                        <div class="action-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="action-label">Referral Program</div>
+                        <div class="action-desc">Earn 10% from referrals</div>
+                    </div>
                 </div>
-                <div class="action-label">Recharge</div>
-            </div>
-            <div class="action-btn" id="withdraw-btn">
-                <div class="action-icon">
-                    <i class="fas fa-wallet"></i>
-                </div>
-                <div class="action-label">Withdraw</div>
-            </div>
-        </div>
 
-        <div class="vip-section">
-            <div class="section-title">
-                <i class="fas fa-crown"></i>
-                <span>VIP Levels</span>
-            </div>
-            
-            <div class="vip-levels">
-                <div class="vip-level vip1" data-level="1" data-price="8" data-profit="3">
-                    <div class="vip-name">VIP 1</div>
-                    <div class="vip-price">$8</div>
-                    <div class="vip-profit">3% Daily Profit</div>
+                <div class="vip-section">
+                    <div class="section-title">
+                        <i class="fas fa-crown"></i>
+                        <span>VIP Levels</span>
+                    </div>
+                    
+                    <div class="vip-levels">
+                        <div class="vip-level vip1">
+                            <div class="vip-name">VIP 1</div>
+                            <div class="vip-price">$8</div>
+                            <div class="vip-profit">3% Daily Profit</div>
+                        </div>
+                        <div class="vip-level vip2">
+                            <div class="vip-name">VIP 2</div>
+                            <div class="vip-price">$14</div>
+                            <div class="vip-profit">3.2% Daily Profit</div>
+                        </div>
+                        <div class="vip-level vip3">
+                            <div class="vip-name">VIP 3</div>
+                            <div class="vip-price">$18</div>
+                            <div class="vip-profit">3.5% Daily Profit</div>
+                        </div>
+                        <div class="vip-level vip4">
+                            <div class="vip-name">VIP 4</div>
+                            <div class="vip-price">$30</div>
+                            <div class="vip-profit">4% Daily Profit</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="vip-level vip2" data-level="2" data-price="14" data-profit="3.2">
-                    <div class="vip-name">VIP 2</div>
-                    <div class="vip-price">$14</div>
-                    <div class="vip-profit">3.2% Daily Profit</div>
-                </div>
-                <div class="vip-level vip3" data-level="3" data-price="18" data-profit="3.5">
-                    <div class="vip-name">VIP 3</div>
-                    <div class="vip-price">$18</div>
-                    <div class="vip-profit">3.5% Daily Profit</div>
-                </div>
-                <div class="vip-level vip4" data-level="4" data-price="30" data-profit="4">
-                    <div class="vip-name">VIP 4</div>
-                    <div class="vip-price">$30</div>
-                    <div class="vip-profit">4% Daily Profit</div>
-                </div>
-            </div>
-            
-            <button class="vip-btn" id="buy-vip-btn" disabled>Buy VIP</button>
-        </div>
 
-        <div class="daily-profit-section">
-            <div class="section-title">
-                <i class="fas fa-coins"></i>
-                <span>Daily Profit</span>
-            </div>
-            
-            <div class="profit-timer" id="profit-timer">Next profit available in: 24:00:00</div>
-            
-            <button class="profit-btn" id="profit-btn" disabled>Claim Daily Profit</button>
-        </div>
-
-        <div class="referral-section">
-            <div class="section-title">
-                <i class="fas fa-user-friends"></i>
-                <span>Referral System</span>
-            </div>
-            
-            <p>Invite friends and earn 10% of their investments!</p>
-            
-            <div class="referral-code" id="referral-code">Loading...</div>
-            
-            <div class="referral-actions">
-                <button class="ref-action-btn" id="copy-ref-btn">Copy Link</button>
-                <button class="ref-action-btn" id="share-ref-btn">Share on Telegram</button>
-            </div>
-            
-            <div class="referral-stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="referrals-count">0</div>
-                    <div class="stat-label">Total Referrals</div>
+                <div class="referral-section">
+                    <div class="section-title">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Referral System</span>
+                    </div>
+                    
+                    <p>Invite friends and earn 10% of their investments!</p>
+                    <p>Register with a referral code to get started.</p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">$<span id="referral-earnings">0.00</span></div>
-                    <div class="stat-label">Referral Earnings</div>
-                </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="history-section">
-            <div class="section-title">
-                <i class="fas fa-history"></i>
-                <span>Transaction History</span>
-            </div>
-            
-            <div class="history-tabs">
-                <div class="history-tab active" data-tab="all">All</div>
-                <div class="history-tab" data-tab="recharge">Recharge</div>
-                <div class="history-tab" data-tab="withdraw">Withdraw</div>
-                <div class="history-tab" data-tab="profit">Profit</div>
-            </div>
-            
-            <div class="history-list" id="history-list">
-                <div class="loading">Loading transactions...</div>
-            </div>
-        </div>
+            <!-- Dashboard (Visible when logged in) -->
+            <section id="dashboard" class="page dashboard">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <h2 id="dashboard-username">User</h2>
+                        <p id="dashboard-email">Email</p>
+                        <div class="user-address" id="user-address">Your BNB Address: Loading...</div>
+                    </div>
+                    <div class="vip-badge" id="vip-badge">No VIP</div>
+                </div>
+
+                <div class="balance-card">
+                    <div class="balance-label">Your Balance</div>
+                    <div class="balance-amount">$<span id="balance">0.00</span></div>
+                    <div class="balance-label">Available for withdrawal</div>
+                </div>
+
+                <div class="actions">
+                    <div class="action-btn" id="recharge-btn">
+                        <div class="action-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="action-label">Recharge</div>
+                    </div>
+                    <div class="action-btn" id="withdraw-btn">
+                        <div class="action-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="action-label">Withdraw</div>
+                    </div>
+                </div>
+
+                <div class="vip-section">
+                    <div class="section-title">
+                        <i class="fas fa-crown"></i>
+                        <span>VIP Levels</span>
+                    </div>
+                    
+                    <div class="vip-levels">
+                        <div class="vip-level vip1" data-level="1" data-price="8" data-profit="3">
+                            <div class="vip-name">VIP 1</div>
+                            <div class="vip-price">$8</div>
+                            <div class="vip-profit">3% Daily Profit</div>
+                        </div>
+                        <div class="vip-level vip2" data-level="2" data-price="14" data-profit="3.2">
+                            <div class="vip-name">VIP 2</div>
+                            <div class="vip-price">$14</div>
+                            <div class="vip-profit">3.2% Daily Profit</div>
+                        </div>
+                        <div class="vip-level vip3" data-level="3" data-price="18" data-profit="3.5">
+                            <div class="vip-name">VIP 3</div>
+                            <div class="vip-price">$18</div>
+                            <div class="vip-profit">3.5% Daily Profit</div>
+                        </div>
+                        <div class="vip-level vip4" data-level="4" data-price="30" data-profit="4">
+                            <div class="vip-name">VIP 4</div>
+                            <div class="vip-price">$30</div>
+                            <div class="vip-profit">4% Daily Profit</div>
+                        </div>
+                    </div>
+                    
+                    <button class="vip-btn" id="buy-vip-btn" disabled>Buy VIP</button>
+                </div>
+
+                <div class="daily-profit-section">
+                    <div class="section-title">
+                        <i class="fas fa-coins"></i>
+                        <span>Daily Profit</span>
+                    </div>
+                    
+                    <div class="profit-timer" id="profit-timer">Next profit available in: 24:00:00</div>
+                    
+                    <button class="profit-btn" id="profit-btn" disabled>Claim Daily Profit</button>
+                </div>
+
+                <div class="referral-section">
+                    <div class="section-title">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Referral System</span>
+                    </div>
+                    
+                    <p>Invite friends and earn 10% of their investments!</p>
+                    
+                    <div class="referral-code" id="referral-code">Loading...</div>
+                    
+                    <div class="referral-actions">
+                        <button class="ref-action-btn" id="copy-ref-btn">Copy Link</button>
+                        <button class="ref-action-btn" id="copy-code-btn">Copy Code</button>
+                    </div>
+                    
+                    <div class="referral-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="referrals-count">0</div>
+                            <div class="stat-label">Total Referrals</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">$<span id="referral-earnings">0.00</span></div>
+                            <div class="stat-label">Referral Earnings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recharge-section">
+                    <div class="section-title">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Recharge Account</span>
+                    </div>
+                    
+                    <p>Minimum recharge amount: $8.00 (BNB only)</p>
+                    
+                    <div class="recharge-options">
+                        <div class="recharge-option" data-amount="8">
+                            <div class="recharge-amount">$8</div>
+                        </div>
+                        <div class="recharge-option selected" data-amount="20">
+                            <div class="recharge-amount">$20</div>
+                        </div>
+                        <div class="recharge-option" data-amount="50">
+                            <div class="recharge-amount">$50</div>
+                        </div>
+                        <div class="recharge-option" data-amount="100">
+                            <div class="recharge-amount">$100</div>
+                        </div>
+                    </div>
+                    
+                    <div class="recharge-address" id="recharge-address">
+                        Your personal BNB address will appear here after registration
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
+                        Send BNB to this address. After 3 network confirmations, your balance will be updated automatically.
+                    </p>
+                </div>
+
+                <div class="history-section">
+                    <div class="section-title">
+                        <i class="fas fa-history"></i>
+                        <span>Transaction History</span>
+                    </div>
+                    
+                    <div class="history-tabs">
+                        <div class="history-tab active" data-tab="all">All</div>
+                        <div class="history-tab" data-tab="recharge">Recharge</div>
+                        <div class="history-tab" data-tab="withdraw">Withdraw</div>
+                        <div class="history-tab" data-tab="profit">Profit</div>
+                    </div>
+                    
+                    <div class="history-list" id="history-list">
+                        <div class="loading">Loading transactions...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
 
         <footer>
             <p>AfghanPawer &copy; 2023 - All rights reserved</p>
         </footer>
     </div>
 
-    <!-- Recharge Modal -->
-    <div class="modal" id="recharge-modal">
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
         <div class="modal-content fade-in">
             <div class="modal-header">
-                <div class="modal-title">Recharge Account</div>
+                <div class="modal-title">Create Account</div>
                 <button class="close-modal">&times;</button>
             </div>
-            <p>Minimum recharge amount: $8.00 (USDT BEP20 only)</p>
-            
-            <div class="recharge-options">
-                <div class="recharge-option" data-amount="8">
-                    <div class="recharge-amount">$8</div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" required>
                 </div>
-                <div class="recharge-option selected" data-amount="20">
-                    <div class="recharge-amount">$20</div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" required>
                 </div>
-                <div class="recharge-option" data-amount="50">
-                    <div class="recharge-amount">$50</div>
+                <div class="form-group">
+                    <label for="reg-refcode">Referral Code (Optional)</label>
+                    <input type="text" id="reg-refcode">
                 </div>
-                <div class="recharge-option" data-amount="100">
-                    <div class="recharge-amount">$100</div>
-                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+            </form>
+            <div class="form-footer">
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
             </div>
-            
-            <div style="margin: 15px 0;">
-                <label for="custom-amount">Or enter custom amount:</label>
-                <input type="number" id="custom-amount" min="8" step="0.01" value="20" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content fade-in">
+            <div class="modal-header">
+                <div class="modal-title">Login</div>
+                <button class="close-modal">&times;</button>
             </div>
-            
-            <div class="recharge-address" id="recharge-address">
-                0x5Dff7E7F810AF7C0f45EF9902c3ba0E8ED3Aa497
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <div class="form-footer">
+                <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
             </div>
-            
-            <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
-                Send USDT (BEP20) to this address. After 3 network confirmations, your balance will be updated automatically.
-            </p>
-            
-            <button class="recharge-btn" id="confirm-recharge">I've Sent the Payment</button>
         </div>
     </div>
 
@@ -778,14 +918,14 @@
             </div>
             <p>Minimum withdrawal amount: $5.00</p>
             
-            <div style="margin: 15px 0;">
+            <div class="form-group">
                 <label for="withdraw-amount">Amount:</label>
-                <input type="number" id="withdraw-amount" min="5" step="0.01" value="5" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="number" id="withdraw-amount" min="5" step="0.01" value="5">
             </div>
             
-            <div style="margin: 15px 0;">
-                <label for="withdraw-address">Your USDT BEP20 Address:</label>
-                <input type="text" id="withdraw-address" placeholder="Enter your USDT BEP20 address" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <div class="form-group">
+                <label for="withdraw-address">Your BNB Address:</label>
+                <input type="text" id="withdraw-address" placeholder="Enter your BNB address">
             </div>
             
             <button class="recharge-btn" id="confirm-withdraw">Request Withdrawal</button>
@@ -806,31 +946,9 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const database = firebase.database();
 
-        // Initialize Telegram Web App
-        let tg = window.Telegram.WebApp;
-        
-        // Expand the app to full height
-        tg.expand();
-        
-        // Get user data from Telegram
-        const user = tg.initDataUnsafe.user;
-        let userId = user ? user.id.toString() : null;
-        
-        if (!userId) {
-            // If no user ID from Telegram, show error
-            document.body.innerHTML = `
-                <div class="container">
-                    <div style="text-align: center; padding: 50px 20px;">
-                        <h1 style="color: var(--danger);">Error</h1>
-                        <p>This app must be opened from Telegram. Please open it via @AfghanPawer_Bot</p>
-                    </div>
-                </div>
-            `;
-            throw new Error("User not authenticated via Telegram");
-        }
-        
         // VIP levels configuration
         const vipLevels = {
             1: { price: 8, profit: 3 },
@@ -838,92 +956,258 @@
             3: { price: 18, profit: 3.5 },
             4: { price: 30, profit: 4 }
         };
-        
-        // USDT BEP20 address for recharges
-        const usdtBep20Address = "0x5Dff7E7F810AF7C0f45EF9902c3ba0E8ED3Aa497";
-        
-        // Set user information from Telegram
-        document.getElementById('username').textContent = user.first_name || 'User';
-        document.getElementById('user-id').textContent = `ID: ${user.id}`;
-        
-        // Set user avatar if available
-        if (user.photo_url) {
-            document.getElementById('user-avatar').innerHTML = `<img src="${user.photo_url}" alt="User Avatar">`;
+
+        // Company USDT BEP20 address for VIP purchases
+        const companyUsdtAddress = "0x5Dff7E7F810AF7C0f45EF9902c3ba0E8ED3Aa497";
+
+        // Global user data
+        let userData = null;
+        let currentUser = null;
+
+        // Check URL for referral code
+        function getReferralCodeFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('ref') || '';
         }
-        
+
+        // Generate a unique BNB address for user
+        function generateBNBAddress() {
+            // In a real app, this would generate a unique address
+            // For demo, we'll create a pseudo-random address
+            const chars = '0123456789abcdef';
+            let address = '0x';
+            for (let i = 0; i < 40; i++) {
+                address += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return address;
+        }
+
         // Generate referral code
-        const referralCode = `AFG${user.id}`;
-        document.getElementById('referral-code').textContent = referralCode;
-        
-        // User data object
-        let userData = {
-            balance: 0,
-            vipLevel: 0,
-            lastProfitClaim: 0,
-            referrals: 0,
-            referralEarnings: 0,
-            rechargeTotal: 0,
-            withdrawTotal: 0,
-            profitTotal: 0,
-            transactions: []
-        };
-        
+        function generateReferralCode() {
+            return 'AFG' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    loadUserData();
+                    showDashboard();
+                } else {
+                    showHomePage();
+                    
+                    // Pre-fill referral code if present in URL
+                    const refCode = getReferralCodeFromURL();
+                    if (refCode) {
+                        document.getElementById('reg-refcode').value = refCode;
+                    }
+                }
+            });
+
+            // Register modal
+            document.getElementById('register-btn').addEventListener('click', () => {
+                document.getElementById('register-modal').style.display = 'flex';
+            });
+
+            // Login modal
+            document.getElementById('login-btn').addEventListener('click', () => {
+                document.getElementById('login-modal').style.display = 'flex';
+            });
+
+            // Switch between login and register modals
+            document.getElementById('show-login').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('register-modal').style.display = 'none';
+                document.getElementById('login-modal').style.display = 'flex';
+            });
+
+            document.getElementById('show-register').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('login-modal').style.display = 'none';
+                document.getElementById('register-modal').style.display = 'flex';
+            });
+
+            // Close modals
+            document.querySelectorAll('.close-modal').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+
+            // Register form submission
+            document.getElementById('register-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('reg-email').value;
+                const password = document.getElementById('reg-password').value;
+                const refCode = document.getElementById('reg-refcode').value;
+
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        // User registered successfully
+                        const user = userCredential.user;
+                        
+                        // Generate user data
+                        const userRefCode = generateReferralCode();
+                        const bnbAddress = generateBNBAddress();
+                        
+                        const newUserData = {
+                            email: email,
+                            referralCode: userRefCode,
+                            bnbAddress: bnbAddress,
+                            balance: 0,
+                            vipLevel: 0,
+                            lastProfitClaim: 0,
+                            referrals: 0,
+                            referralEarnings: 0,
+                            rechargeTotal: 0,
+                            withdrawTotal: 0,
+                            profitTotal: 0,
+                            transactions: [],
+                            joinedDate: new Date().toISOString(),
+                            referredBy: refCode || null
+                        };
+                        
+                        // Save user data to Firebase
+                        database.ref('users/' + user.uid).set(newUserData)
+                            .then(() => {
+                                // Close modal and show dashboard
+                                document.getElementById('register-modal').style.display = 'none';
+                                
+                                // If user was referred, update referrer's data
+                                if (refCode) {
+                                    // Find user with this referral code
+                                    database.ref('users').orderByChild('referralCode').equalTo(refCode).once('value')
+                                        .then((snapshot) => {
+                                            if (snapshot.exists()) {
+                                                const referrerData = snapshot.val();
+                                                const referrerId = Object.keys(referrerData)[0];
+                                                
+                                                // Update referrer's referral count
+                                                database.ref('users/' + referrerId + '/referrals').transaction((current) => {
+                                                    return (current || 0) + 1;
+                                                });
+                                            }
+                                        });
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error saving user data:', error);
+                                alert('Error creating account: ' + error.message);
+                            });
+                    })
+                    .catch((error) => {
+                        alert('Error creating account: ' + error.message);
+                    });
+            });
+
+            // Login form submission
+            document.getElementById('login-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => {
+                        document.getElementById('login-modal').style.display = 'none';
+                    })
+                    .catch((error) => {
+                        alert('Error signing in: ' + error.message);
+                    });
+            });
+
+            // Logout functionality
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'logout-btn') {
+                    auth.signOut().then(() => {
+                        showHomePage();
+                    });
+                }
+            });
+
+            // Initialize other functionality
+            initAppFunctionality();
+        });
+
+        // Show home page (for non-authenticated users)
+        function showHomePage() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('home-page').classList.add('active');
+            
+            // Update auth buttons
+            document.getElementById('login-btn').style.display = 'inline-block';
+            document.getElementById('register-btn').style.display = 'inline-block';
+            
+            // Remove logout button if it exists
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.remove();
+            }
+        }
+
+        // Show dashboard (for authenticated users)
+        function showDashboard() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('dashboard').classList.add('active');
+            
+            // Update auth buttons to show logout
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('register-btn').style.display = 'none';
+            
+            // Add logout button if it doesn't exist
+            if (!document.getElementById('logout-btn')) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.id = 'logout-btn';
+                logoutBtn.className = 'btn btn-outline';
+                logoutBtn.textContent = 'Logout';
+                document.querySelector('.auth-buttons').appendChild(logoutBtn);
+            }
+        }
+
         // Load user data from Firebase
         function loadUserData() {
-            const userRef = database.ref('users/' + userId);
+            if (!currentUser) return;
+            
+            const userRef = database.ref('users/' + currentUser.uid);
             
             userRef.on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userData = snapshot.val();
-                    
-                    // Ensure all required fields exist
-                    if (!userData.transactions) userData.transactions = [];
-                    if (!userData.referrals) userData.referrals = 0;
-                    if (!userData.referralEarnings) userData.referralEarnings = 0;
-                    if (!userData.rechargeTotal) userData.rechargeTotal = 0;
-                    if (!userData.withdrawTotal) userData.withdrawTotal = 0;
-                    if (!userData.profitTotal) userData.profitTotal = 0;
-                    
-                    updateUI();
-                } else {
-                    // Create new user with initial data
-                    userData = {
-                        balance: 0,
-                        vipLevel: 0,
-                        lastProfitClaim: 0,
-                        referrals: 0,
-                        referralEarnings: 0,
-                        rechargeTotal: 0,
-                        withdrawTotal: 0,
-                        profitTotal: 0,
-                        transactions: [],
-                        telegramData: {
-                            id: user.id,
-                            first_name: user.first_name,
-                            username: user.username,
-                            photo_url: user.photo_url
-                        },
-                        joinedDate: new Date().toISOString()
-                    };
-                    
-                    userRef.set(userData);
-                    updateUI();
+                    updateDashboard();
                 }
-            }, (error) => {
-                console.error('Error loading user data:', error);
-                tg.showPopup({
-                    title: 'Connection Error',
-                    message: 'Could not load your data. Please check your connection.',
-                    buttons: [{type: 'ok'}]
-                });
             });
         }
-        
-        // Update UI with user data
-        function updateUI() {
+
+        // Update dashboard with user data
+        function updateDashboard() {
+            if (!userData || !currentUser) return;
+            
+            // Update user info
+            document.getElementById('dashboard-username').textContent = currentUser.email.split('@')[0];
+            document.getElementById('dashboard-email').textContent = currentUser.email;
+            document.getElementById('user-address').textContent = 'Your BNB Address: ' + userData.bnbAddress;
+            
+            // Update balance
             document.getElementById('balance').textContent = userData.balance.toFixed(2);
-            document.getElementById('referrals-count').textContent = userData.referrals;
-            document.getElementById('referral-earnings').textContent = userData.referralEarnings.toFixed(2);
+            
+            // Update referral code
+            document.getElementById('referral-code').textContent = userData.referralCode;
+            
+            // Update referral stats
+            document.getElementById('referrals-count').textContent = userData.referrals || 0;
+            document.getElementById('referral-earnings').textContent = (userData.referralEarnings || 0).toFixed(2);
             
             // Update VIP badge
             const vipBadge = document.getElementById('vip-badge');
@@ -935,9 +1219,187 @@
                 vipBadge.style.background = '#6c757d';
             }
             
+            // Update recharge address
+            document.getElementById('recharge-address').textContent = userData.bnbAddress;
+            
+            // Update transaction history
+            updateHistory();
+            
             // Update VIP purchase button
+            updateVipButton();
+            
+            // Update profit claim button
+            updateProfitButton();
+        }
+
+        // Get VIP color based on level
+        function getVipColor(level) {
+            switch(level) {
+                case 1: return '#ffd700';
+                case 2: return '#c0c0c0';
+                case 3: return '#cd7f32';
+                case 4: return '#e5e4e2';
+                default: return '#6c757d';
+            }
+        }
+
+        // Initialize app functionality
+        function initAppFunctionality() {
+            // VIP level selection
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.vip-level')) {
+                    const vipLevel = e.target.closest('.vip-level');
+                    document.querySelectorAll('.vip-level').forEach(level => {
+                        level.classList.remove('selected');
+                    });
+                    vipLevel.classList.add('selected');
+                    updateVipButton();
+                }
+            });
+
+            // Recharge option selection
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.recharge-option')) {
+                    const option = e.target.closest('.recharge-option');
+                    document.querySelectorAll('.recharge-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                }
+            });
+
+            // Copy referral link
+            document.getElementById('copy-ref-btn').addEventListener('click', () => {
+                const referralLink = window.location.origin + '?ref=' + userData.referralCode;
+                navigator.clipboard.writeText(referralLink).then(() => {
+                    alert('Referral link copied to clipboard!');
+                });
+            });
+
+            // Copy referral code
+            document.getElementById('copy-code-btn').addEventListener('click', () => {
+                navigator.clipboard.writeText(userData.referralCode).then(() => {
+                    alert('Referral code copied to clipboard!');
+                });
+            });
+
+            // Buy VIP
+            document.getElementById('buy-vip-btn').addEventListener('click', () => {
+                const selectedVip = document.querySelector('.vip-level.selected');
+                if (!selectedVip) return;
+                
+                const vipLevel = parseInt(selectedVip.getAttribute('data-level'));
+                const vipPrice = parseFloat(selectedVip.getAttribute('data-price'));
+                
+                if (userData.balance >= vipPrice && userData.vipLevel < vipLevel) {
+                    if (confirm(`Are you sure you want to purchase VIP ${vipLevel} for $${vipPrice}?`)) {
+                        // Process VIP purchase
+                        userData.balance -= vipPrice;
+                        userData.vipLevel = vipLevel;
+                        
+                        // Add transaction
+                        addTransaction('vip', -vipPrice, `VIP ${vipLevel} Purchase`);
+                        
+                        // Simulate blockchain transfer (5 seconds)
+                        alert('Processing VIP purchase... Please wait 5 seconds.');
+                        
+                        setTimeout(() => {
+                            // Update Firebase
+                            database.ref('users/' + currentUser.uid).set(userData);
+                            
+                            alert(`Congratulations! You are now VIP ${vipLevel}. You can now claim daily profits.`);
+                        }, 5000);
+                    }
+                }
+            });
+
+            // Claim daily profit
+            document.getElementById('profit-btn').addEventListener('click', () => {
+                if (userData.vipLevel > 0) {
+                    const now = new Date().getTime();
+                    const lastClaim = userData.lastProfitClaim || 0;
+                    const nextClaimTime = lastClaim + (24 * 60 * 60 * 1000);
+                    
+                    if (now >= nextClaimTime) {
+                        const profitPercentage = vipLevels[userData.vipLevel].profit;
+                        const profitAmount = (userData.rechargeTotal * profitPercentage) / 100;
+                        
+                        userData.balance += profitAmount;
+                        userData.lastProfitClaim = now;
+                        userData.profitTotal += profitAmount;
+                        
+                        // Add transaction
+                        addTransaction('profit', profitAmount, `Daily Profit (VIP ${userData.vipLevel})`);
+                        
+                        // Update Firebase
+                        database.ref('users/' + currentUser.uid).set(userData);
+                        
+                        alert(`You've received $${profitAmount.toFixed(2)} daily profit!`);
+                    }
+                }
+            });
+
+            // Withdraw functionality
+            document.getElementById('withdraw-btn').addEventListener('click', () => {
+                if (userData.balance < 5) {
+                    alert('Minimum withdrawal amount is $5.00');
+                    return;
+                }
+                document.getElementById('withdraw-modal').style.display = 'flex';
+            });
+
+            document.getElementById('confirm-withdraw').addEventListener('click', () => {
+                const amount = parseFloat(document.getElementById('withdraw-amount').value);
+                const address = document.getElementById('withdraw-address').value;
+                
+                if (amount < 5) {
+                    alert('Minimum withdrawal amount is $5.00');
+                    return;
+                }
+                
+                if (amount > userData.balance) {
+                    alert('Insufficient balance');
+                    return;
+                }
+                
+                if (!address) {
+                    alert('Please enter your BNB address');
+                    return;
+                }
+                
+                // Process withdrawal
+                userData.balance -= amount;
+                userData.withdrawTotal += amount;
+                
+                // Add transaction
+                addTransaction('withdraw', -amount, `Withdrawal to ${address.substring(0, 10)}...`);
+                
+                // Update Firebase
+                database.ref('users/' + currentUser.uid).set(userData);
+                
+                document.getElementById('withdraw-modal').style.display = 'none';
+                alert(`Your withdrawal of $${amount.toFixed(2)} has been submitted. It will be processed within 24 hours.`);
+            });
+
+            // History tab switching
+            document.querySelectorAll('.history-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.history-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+                    updateHistory();
+                });
+            });
+        }
+
+        // Update VIP purchase button state
+        function updateVipButton() {
+            if (!userData) return;
+            
             const buyVipBtn = document.getElementById('buy-vip-btn');
             const selectedVip = document.querySelector('.vip-level.selected');
+            
             if (selectedVip) {
                 const vipLevel = parseInt(selectedVip.getAttribute('data-level'));
                 const vipPrice = parseFloat(selectedVip.getAttribute('data-price'));
@@ -954,15 +1416,19 @@
                     }
                 }
             }
+        }
+
+        // Update profit claim button state
+        function updateProfitButton() {
+            if (!userData) return;
             
-            // Update profit claim button
             const profitBtn = document.getElementById('profit-btn');
             const profitTimer = document.getElementById('profit-timer');
             
             if (userData.vipLevel > 0) {
                 const now = new Date().getTime();
                 const lastClaim = userData.lastProfitClaim || 0;
-                const nextClaimTime = lastClaim + (24 * 60 * 60 * 1000); // 24 hours
+                const nextClaimTime = lastClaim + (24 * 60 * 60 * 1000);
                 
                 if (now >= nextClaimTime) {
                     profitBtn.disabled = false;
@@ -983,54 +1449,40 @@
                 profitBtn.textContent = 'VIP Required';
                 profitTimer.textContent = 'Purchase VIP to earn daily profits';
             }
-            
-            // Update transaction history
-            updateHistory();
         }
-        
-        // Get VIP color based on level
-        function getVipColor(level) {
-            switch(level) {
-                case 1: return '#ffd700';
-                case 2: return '#c0c0c0';
-                case 3: return '#cd7f32';
-                case 4: return '#e5e4e2';
-                default: return '#6c757d';
-            }
-        }
-        
+
         // Update transaction history
         function updateHistory() {
-            const historyList = document.getElementById('history-list');
+            if (!userData || !userData.transactions) return;
             
-            if (!userData.transactions || userData.transactions.length === 0) {
+            const historyList = document.getElementById('history-list');
+            const activeTab = document.querySelector('.history-tab.active').getAttribute('data-tab');
+            
+            // Filter transactions
+            const filteredTransactions = userData.transactions.filter(t => {
+                if (activeTab === 'all') return true;
+                return t.type === activeTab;
+            });
+            
+            // Sort by date (newest first)
+            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Display transactions
+            historyList.innerHTML = '';
+            
+            if (filteredTransactions.length === 0) {
                 historyList.innerHTML = '<div class="history-item">No transactions yet</div>';
                 return;
             }
             
-            // Get active tab
-            const activeTab = document.querySelector('.history-tab.active').getAttribute('data-tab');
-            
-            // Filter transactions based on active tab
-            const filteredTransactions = userData.transactions.filter(transaction => {
-                if (activeTab === 'all') return true;
-                return transaction.type === activeTab;
-            });
-            
-            // Sort transactions by date (newest first)
-            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // Clear and display transactions
-            historyList.innerHTML = '';
-            
             filteredTransactions.forEach(transaction => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
+                const item = document.createElement('div');
+                item.className = 'history-item';
                 
                 const amountClass = transaction.amount >= 0 ? 'positive' : 'negative';
                 const amountSign = transaction.amount >= 0 ? '+' : '';
                 
-                historyItem.innerHTML = `
+                item.innerHTML = `
                     <div>
                         <div class="history-type">${transaction.description}</div>
                         <div class="history-date">${formatDate(transaction.date)}</div>
@@ -1038,45 +1490,13 @@
                     <div class="history-amount ${amountClass}">${amountSign}$${Math.abs(transaction.amount).toFixed(2)}</div>
                 `;
                 
-                historyList.appendChild(historyItem);
+                historyList.appendChild(item);
             });
         }
-        
-        // Format date for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / (1000 * 60));
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins} min ago`;
-            if (diffHours < 24) return `${diffHours} hours ago`;
-            if (diffDays < 7) return `${diffDays} days ago`;
-            
-            return date.toLocaleDateString();
-        }
-        
-        // Save user data to Firebase
-        function saveUserData() {
-            const userRef = database.ref('users/' + userId);
-            userRef.set(userData).catch((error) => {
-                console.error('Error saving user data:', error);
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Failed to save data. Please check your connection.',
-                    buttons: [{type: 'ok'}]
-                });
-            });
-        }
-        
+
         // Add transaction to history
         function addTransaction(type, amount, description) {
-            if (!userData.transactions) {
-                userData.transactions = [];
-            }
+            if (!userData.transactions) userData.transactions = [];
             
             userData.transactions.push({
                 type: type,
@@ -1090,292 +1510,19 @@
                 userData.transactions = userData.transactions.slice(-50);
             }
         }
-        
-        // Modal functionality
-        const rechargeBtn = document.getElementById('recharge-btn');
-        const withdrawBtn = document.getElementById('withdraw-btn');
-        const rechargeModal = document.getElementById('recharge-modal');
-        const withdrawModal = document.getElementById('withdraw-modal');
-        const closeButtons = document.querySelectorAll('.close-modal');
-        
-        rechargeBtn.addEventListener('click', () => {
-            rechargeModal.style.display = 'flex';
-        });
-        
-        withdrawBtn.addEventListener('click', () => {
-            if (userData.balance < 5) {
-                tg.showPopup({
-                    title: 'Insufficient Balance',
-                    message: 'Minimum withdrawal amount is $5.00',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
-            }
-            withdrawModal.style.display = 'flex';
-        });
-        
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                rechargeModal.style.display = 'none';
-                withdrawModal.style.display = 'none';
-            });
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === rechargeModal) {
-                rechargeModal.style.display = 'none';
-            }
-            if (event.target === withdrawModal) {
-                withdrawModal.style.display = 'none';
-            }
-        });
-        
-        // Recharge option selection
-        const rechargeOptions = document.querySelectorAll('.recharge-option');
-        const customAmountInput = document.getElementById('custom-amount');
-        
-        rechargeOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                rechargeOptions.forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-                customAmountInput.value = option.getAttribute('data-amount');
-            });
-        });
-        
-        customAmountInput.addEventListener('input', () => {
-            rechargeOptions.forEach(opt => opt.classList.remove('selected'));
-        });
-        
-        // Confirm recharge
-        document.getElementById('confirm-recharge').addEventListener('click', () => {
-            const amount = parseFloat(customAmountInput.value);
-            
-            if (amount < 8) {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Minimum recharge amount is $8.00',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
-            }
-            
-            rechargeModal.style.display = 'none';
-            
-            tg.showPopup({
-                title: 'Recharge Instructions',
-                message: `Send $${amount} USDT (BEP20) to the address shown. Your balance will update after 3 network confirmations.`,
-                buttons: [{type: 'ok'}]
-            });
-            
-            // In a real app, you would wait for blockchain confirmation
-            // For demo purposes, we'll add a pending transaction
-            addTransaction('pending_recharge', amount, `Pending Recharge - $${amount}`);
-            updateUI();
-        });
-        
-        // Confirm withdrawal
-        document.getElementById('confirm-withdraw').addEventListener('click', () => {
-            const amount = parseFloat(document.getElementById('withdraw-amount').value);
-            const address = document.getElementById('withdraw-address').value;
-            
-            if (amount < 5) {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Minimum withdrawal amount is $5.00',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
-            }
-            
-            if (amount > userData.balance) {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Insufficient balance',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
-            }
-            
-            if (!address || address.length < 10) {
-                tg.showPopup({
-                    title: 'Error',
-                    message: 'Please enter a valid USDT BEP20 address',
-                    buttons: [{type: 'ok'}]
-                });
-                return;
-            }
-            
-            withdrawModal.style.display = 'none';
-            
-            // Process withdrawal
-            userData.balance -= amount;
-            userData.withdrawTotal += amount;
-            addTransaction('withdraw', -amount, `Withdrawal to ${address.substring(0, 10)}...`);
-            updateUI();
-            saveUserData();
-            
-            tg.showPopup({
-                title: 'Withdrawal Requested',
-                message: `Your withdrawal of $${amount.toFixed(2)} has been submitted. It will be processed within 24 hours.`,
-                buttons: [{type: 'ok'}]
-            });
-            
-            // Clear the form
-            document.getElementById('withdraw-amount').value = '5';
-            document.getElementById('withdraw-address').value = '';
-        });
-        
-        // VIP level selection
-        const vipLevelElements = document.querySelectorAll('.vip-level');
-        vipLevelElements.forEach(level => {
-            level.addEventListener('click', () => {
-                vipLevelElements.forEach(l => l.classList.remove('selected'));
-                level.classList.add('selected');
-                updateUI();
-            });
-        });
-        
-        // Auto-select first VIP level
-        if (vipLevelElements.length > 0) {
-            vipLevelElements[0].classList.add('selected');
+
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         }
-        
-        // Buy VIP
-        document.getElementById('buy-vip-btn').addEventListener('click', () => {
-            const selectedVip = document.querySelector('.vip-level.selected');
-            const vipLevel = parseInt(selectedVip.getAttribute('data-level'));
-            const vipPrice = parseFloat(selectedVip.getAttribute('data-price'));
-            
-            if (userData.balance >= vipPrice && userData.vipLevel < vipLevel) {
-                tg.showPopup({
-                    title: 'Confirm VIP Purchase',
-                    message: `Are you sure you want to purchase VIP ${vipLevel} for $${vipPrice}?`,
-                    buttons: [
-                        {type: 'cancel'},
-                        {type: 'ok', text: 'Confirm'}
-                    ]
-                }, (buttonId) => {
-                    if (buttonId === 'ok') {
-                        // Process VIP purchase
-                        userData.balance -= vipPrice;
-                        userData.vipLevel = vipLevel;
-                        addTransaction('vip', -vipPrice, `VIP ${vipLevel} Purchase`);
-                        
-                        // In a real app, you would send the payment to the blockchain address
-                        // For demo, we'll simulate it with a 10-second delay
-                        tg.showPopup({
-                            title: 'Processing',
-                            message: 'Your VIP purchase is being processed...',
-                            buttons: []
-                        });
-                        
-                        setTimeout(() => {
-                            updateUI();
-                            saveUserData();
-                            
-                            tg.showPopup({
-                                title: 'VIP Activated',
-                                message: `Congratulations! You are now VIP ${vipLevel}. You can now claim daily profits.`,
-                                buttons: [{type: 'ok'}]
-                            });
-                        }, 10000); // 10 seconds delay to simulate blockchain processing
-                    }
-                });
-            }
-        });
-        
-        // Claim daily profit
-        document.getElementById('profit-btn').addEventListener('click', () => {
-            if (userData.vipLevel > 0) {
-                const now = new Date().getTime();
-                const lastClaim = userData.lastProfitClaim || 0;
-                const nextClaimTime = lastClaim + (24 * 60 * 60 * 1000);
-                
-                if (now >= nextClaimTime) {
-                    const profitPercentage = vipLevels[userData.vipLevel].profit;
-                    const profitAmount = (userData.rechargeTotal * profitPercentage) / 100;
-                    
-                    userData.balance += profitAmount;
-                    userData.lastProfitClaim = now;
-                    userData.profitTotal += profitAmount;
-                    addTransaction('profit', profitAmount, `Daily Profit (VIP ${userData.vipLevel})`);
-                    
-                    updateUI();
-                    saveUserData();
-                    
-                    tg.showPopup({
-                        title: 'Profit Claimed',
-                        message: `You've received $${profitAmount.toFixed(2)} daily profit!`,
-                        buttons: [{type: 'ok'}]
-                    });
-                }
-            }
-        });
-        
-        // Copy referral link
-        document.getElementById('copy-ref-btn').addEventListener('click', () => {
-            const referralLink = `https://t.me/AfghanPawer_Bot?start=${userId}`;
-            navigator.clipboard.writeText(referralLink).then(() => {
-                tg.showPopup({
-                    title: 'Copied!',
-                    message: 'Referral link copied to clipboard',
-                    buttons: [{type: 'ok'}]
-                });
-            }).catch(() => {
-                // Fallback for browsers that don't support clipboard API
-                const textArea = document.createElement('textarea');
-                textArea.value = referralLink;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                tg.showPopup({
-                    title: 'Copied!',
-                    message: 'Referral link copied to clipboard',
-                    buttons: [{type: 'ok'}]
-                });
-            });
-        });
-        
-        // Share referral link on Telegram
-        document.getElementById('share-ref-btn').addEventListener('click', () => {
-            const referralLink = `https://t.me/AfghanPawer_Bot?start=${userId}`;
-            const message = `Join AfghanPawer and earn daily profits! Use my referral link: ${referralLink}`;
-            
-            if (tg.isVersionAtLeast('6.0')) {
-                tg.shareUrl(message, referralLink);
-            } else {
-                // Fallback for older versions
-                navigator.clipboard.writeText(message).then(() => {
-                    tg.showPopup({
-                        title: 'Copied!',
-                        message: 'Referral message copied to clipboard. You can now share it on Telegram.',
-                        buttons: [{type: 'ok'}]
-                    });
-                });
-            }
-        });
-        
-        // History tab switching
-        const historyTabs = document.querySelectorAll('.history-tab');
-        historyTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                historyTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                updateHistory();
-            });
-        });
-        
-        // Set recharge address
-        document.getElementById('recharge-address').textContent = usdtBep20Address;
-        
-        // Initialize the app
-        loadUserData();
-        
+
         // Update profit timer every second
-        setInterval(updateUI, 1000);
+        setInterval(() => {
+            if (userData) {
+                updateProfitButton();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
