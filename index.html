@@ -2,1527 +2,1012 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AfghanPawer - Crypto Investment Platform</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DOGS HUB Token Airdrop</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Internal CSS -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        /* CSS Variables for Theming */
         :root {
-            --primary: #8a2be2;
-            --primary-dark: #6a1cb0;
-            --secondary: #ff6b6b;
-            --accent: #4ecdc4;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --vip1: #ffd700;
-            --vip2: #c0c0c0;
-            --vip3: #cd7f32;
-            --vip4: #e5e4e2;
+            --font-family-primary: 'Poppins', sans-serif;
+            --font-family-heading: 'Montserrat', sans-serif;
+            --bg-color-light: #f8f9fa;
+            --secondary-bg-light: #ffffff;
+            --text-color-light: #1a1a1a;
+            --subtle-text-light: #6c757d;
+            --primary-color-light: #ff6b35;
+            --secondary-color-light: #ff9f1c;
+            --border-color-light: #e0e0e0;
+            --bg-color-dark: #121212;
+            --secondary-bg-dark: #1e1e1e;
+            --text-color-dark: #ffffff;
+            --subtle-text-dark: #a0a0a0;
+            --primary-color-dark: #ff8c42;
+            --secondary-color-dark: #ffb347;
+            --border-color-dark: #333333;
+            --gradient-primary: linear-gradient(135deg, #ff6b35, #ff9f1c);
+            --gradient-dark: linear-gradient(135deg, #ff8c42, #ffb347);
         }
 
+        /* Base Styles */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: var(--dark);
+            font-family: var(--font-family-primary);
+            transition: background-color 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: var(--bg-color-light);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        /* Theme Styles */
+        body.light-theme { background-color: var(--bg-color-light); color: var(--text-color-light); }
+        body.dark-theme { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
+        #app { max-width: 500px; margin: 0 auto; padding-bottom: 80px; }
 
-        /* Header Styles */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+        /* Header with Dog-themed Design */
+        .app-header {
+            background: var(--gradient-primary);
+            padding: 20px 15px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
+        .dark-theme .app-header {
+            background: var(--gradient-dark);
         }
-
-        .logo i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-right: 15px;
-        }
-
-        .logo h1 {
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 600;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-
-        nav ul li a:hover {
-            background: #f8f9fa;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Auth Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
+        .app-header::before {
+            content: "";
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,40 Q50,20 70,40 Q85,55 70,70 Q50,90 30,70 Q15,55 30,40 Z" fill="white"/><circle cx="40" cy="45" r="5" fill="white"/><circle cx="60" cy="45" r="5" fill="white"/><path d="M45,60 Q50,65 55,60" stroke="white" stroke-width="3" fill="none"/></svg>');
+            background-repeat: repeat;
+            background-size: 80px;
         }
-
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
+        .header-content {
+            position: relative;
+            z-index: 1;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .form-footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        /* Dashboard Styles */
-        .dashboard {
-            display: none;
-        }
-
-        .user-info {
+        .logo-section {
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            gap: 10px;
         }
-
-        .avatar {
-            width: 60px;
-            height: 60px;
+        .logo-icon {
+            font-size: 2rem;
+            color: white;
+        }
+        .logo-text h1 {
+            font-family: var(--font-family-heading);
+            font-size: 1.5rem;
+            color: white;
+            line-height: 1.2;
+        }
+        .logo-text span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--primary);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            color: white;
-            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .user-details h2 {
-            margin-bottom: 5px;
-        }
-
-        .user-details p {
-            color: var(--gray);
-        }
-
-        .vip-badge {
-            background: var(--vip1);
-            color: var(--dark);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: auto;
-        }
-
-        .balance-card {
-            background: white;
-            border-radius: 15px;
+        /* Profile Section */
+        .profile-section {
+            background: var(--secondary-bg-light);
+            margin: 20px 15px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-
-        .balance-amount {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 10px 0;
+        .dark-theme .profile-section {
+            background: var(--secondary-bg-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        .balance-label {
-            color: var(--gray);
+        #user-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color-light);
+        }
+        .dark-theme #user-photo {
+            border-color: var(--primary-color-dark);
+        }
+        .user-details h2 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .verified-icon {
+            color: var(--primary-color-light);
+            font-size: 1rem;
+        }
+        .dark-theme .verified-icon {
+            color: var(--primary-color-dark);
+        }
+        .user-details p {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--subtle-text-light);
+        }
+        .dark-theme .user-details p {
+            color: var(--subtle-text-dark);
+        }
+        .token-balance {
+            margin-left: auto;
+            text-align: right;
+        }
+        .token-balance .amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .dark-theme .token-balance .amount {
+            background: var(--gradient-dark);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .token-balance .label {
             font-size: 0.9rem;
+            color: var(--subtle-text-light);
+            margin-top: 5px;
+        }
+        .dark-theme .token-balance .label {
+            color: var(--subtle-text-dark);
         }
 
-        .actions {
+        /* Main Content & Pages */
+        main { padding: 0 15px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .page-title {
+            font-family: var(--font-family-heading);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .page-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+        .dark-theme .page-title::after {
+            background: var(--gradient-dark);
+        }
+
+        /* Home Page Stats & Referral */
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
-
-        .action-btn {
-            background: white;
-            border: none;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .action-icon {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: var(--primary);
-        }
-
-        .action-label {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-
-        .vip-section, .daily-profit-section, .referral-section, .recharge-section, .history-section {
-            background: white;
-            border-radius: 15px;
+        .stat-card {
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .vip-levels {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .vip-level {
-            border: 2px solid #eee;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 15px;
             text-align: center;
+            background: var(--secondary-bg-light);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .dark-theme .stat-card {
+            background: var(--secondary-bg-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .stat-card .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color-light);
+        }
+        .dark-theme .stat-card .icon {
+            color: var(--primary-color-dark);
+        }
+        .stat-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: var(--subtle-text-light);
+        }
+        .dark-theme .stat-card h3 {
+            color: var(--subtle-text-dark);
+        }
+        .stat-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color-light);
+        }
+        .dark-theme .stat-card p {
+            color: var(--primary-color-dark);
+        }
+        
+        .referral-section {
+            margin-top: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            background: var(--secondary-bg-light);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        .dark-theme .referral-section {
+            background: var(--secondary-bg-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .referral-section h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .referral-section p {
+            margin-bottom: 20px;
+            color: var(--subtle-text-light);
+        }
+        .dark-theme .referral-section p {
+            color: var(--subtle-text-dark);
+        }
+        .referral-input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        #referral-link {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px dashed var(--primary-color-light);
+            border-radius: 10px 0 0 10px;
+            background: var(--bg-color-light);
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+        }
+        .dark-theme #referral-link {
+            border-color: var(--primary-color-dark);
+            background: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+        #copy-ref-link-btn {
+            padding: 12px 20px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 0 10px 10px 0;
+            color: white;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
-
-        .vip-level.selected {
-            border-color: var(--primary);
-            background: rgba(138, 43, 226, 0.1);
+        .dark-theme #copy-ref-link-btn {
+            background: var(--gradient-dark);
+        }
+        #copy-ref-link-btn:hover {
+            opacity: 0.9;
         }
 
-        .vip-level.vip1 { border-color: var(--vip1); }
-        .vip-level.vip2 { border-color: var(--vip2); }
-        .vip-level.vip3 { border-color: var(--vip3); }
-        .vip-level.vip4 { border-color: var(--vip4); }
-
-        .vip-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .vip-price {
-            color: var(--primary);
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .vip-profit {
-            font-size: 0.8rem;
-            color: var(--success);
-        }
-
-        .vip-btn, .profit-btn, .recharge-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 15px;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 15px;
-        }
-
-        .vip-btn:hover, .profit-btn:hover, .recharge-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .vip-btn:disabled, .profit-btn:disabled {
-            background: var(--gray);
-            cursor: not-allowed;
-        }
-
-        .profit-timer {
-            font-size: 1.2rem;
-            margin: 15px 0;
-            color: var(--primary);
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .referral-code {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            margin: 15px 0;
-            font-family: monospace;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            border: 1px dashed var(--primary);
-        }
-
-        .referral-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .ref-action-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .ref-action-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .referral-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-
-        .recharge-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .recharge-option {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .recharge-option:hover {
-            background: #e9ecef;
-        }
-
-        .recharge-option.selected {
-            border-color: var(--primary);
-            background: rgba(138, 43, 226, 0.1);
-        }
-
-        .recharge-amount {
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-        }
-
-        .recharge-address {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            font-family: monospace;
-            font-size: 0.9rem;
-            word-break: break-all;
-            border: 1px dashed var(--primary);
-            text-align: center;
-        }
-
-        .history-tabs {
+        /* Tasks Page */
+        .tasks-container {
             display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .task-card {
+            padding: 25px;
+            border-radius: 15px;
+            background: var(--secondary-bg-light);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+        }
+        .dark-theme .task-card {
+            background: var(--secondary-bg-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .task-icon {
+            font-size: 3.5rem;
             margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
+            color: var(--primary-color-light);
         }
-
-        .history-tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
+        .dark-theme .task-icon {
+            color: var(--primary-color-dark);
         }
-
-        .history-tab.active {
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary);
-            font-weight: bold;
+        .task-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
         }
-
-        .history-list {
-            max-height: 300px;
-            overflow-y: auto;
+        .task-card p {
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            color: var(--subtle-text-light);
         }
-
-        .history-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
+        .dark-theme .task-card p {
+            color: var(--subtle-text-dark);
         }
-
-        .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .history-type {
-            font-weight: bold;
-        }
-
-        .history-amount.positive {
-            color: var(--success);
-        }
-
-        .history-amount.negative {
-            color: var(--danger);
-        }
-
-        .history-date {
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--gray);
-            font-size: 0.8rem;
-            margin-top: 30px;
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            nav ul {
-                margin: 15px 0;
-                justify-content: center;
-            }
-            
-            .auth-buttons {
-                justify-content: center;
-            }
-            
-            .vip-levels, .actions, .referral-stats, .recharge-options, .referral-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: var(--gray);
-        }
-
-        .user-address {
+        .reward-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
             font-size: 0.9rem;
-            color: var(--gray);
-            margin-top: 5px;
-            word-break: break-all;
+            font-weight: 600;
+            margin-bottom: 15px;
         }
+        .dark-theme .reward-badge {
+            background: var(--gradient-dark);
+        }
+
+        /* Action Button */
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--gradient-primary);
+        }
+        .dark-theme .action-btn {
+            background: var(--gradient-dark);
+        }
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        .action-btn.loading .btn-text {
+            visibility: hidden;
+        }
+        .action-btn.loading .btn-loader {
+            display: block;
+            position: absolute;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Withdraw Page */
+        .withdraw-info {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--secondary-bg-light);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .dark-theme .withdraw-info {
+            background: var(--secondary-bg-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .withdraw-info p {
+            color: var(--subtle-text-light);
+            font-size: 0.95rem;
+        }
+        .dark-theme .withdraw-info p {
+            color: var(--subtle-text-dark);
+        }
+        #withdraw-form .form-group {
+            margin-bottom: 20px;
+        }
+        #withdraw-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        #withdraw-form input, #withdraw-form select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: var(--font-family-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: 2px solid var(--border-color-light);
+            background: var(--secondary-bg-light);
+            color: var(--text-color-light);
+        }
+        .dark-theme #withdraw-form input, .dark-theme #withdraw-form select {
+            border-color: var(--border-color-dark);
+            background: var(--secondary-bg-dark);
+            color: var(--text-color-dark);
+        }
+        #withdraw-form input:focus, #withdraw-form select:focus {
+            outline: none;
+            border-color: var(--primary-color-light);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+        .dark-theme #withdraw-form input:focus, .dark-theme #withdraw-form select:focus {
+            border-color: var(--primary-color-dark);
+            box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid var(--border-color-light);
+            background: var(--secondary-bg-light);
+            z-index: 1000;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .dark-theme .bottom-nav {
+            background: var(--secondary-bg-dark);
+            border-top-color: var(--border-color-dark);
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 10px;
+            font-family: var(--font-family-primary);
+            font-size: 0.75rem;
+            transition: all 0.3s;
+            flex-grow: 1;
+            color: var(--subtle-text-light);
+            border-radius: 10px;
+        }
+        .dark-theme .nav-btn {
+            color: var(--subtle-text-dark);
+        }
+        .nav-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        .nav-btn.active {
+            color: var(--primary-color-light);
+            font-weight: 600;
+        }
+        .dark-theme .nav-btn.active {
+            color: var(--primary-color-dark);
+        }
+        .nav-btn.active i {
+            transform: translateY(-5px);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+            background: var(--secondary-bg-light);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .dark-theme .modal-content {
+            background: var(--secondary-bg-dark);
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid var(--primary-color-light);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        .dark-theme .loader {
+            border-top-color: var(--primary-color-dark);
+        }
+        .modal-content p {
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Dog-themed decorative elements */
+        .dog-paw {
+            position: absolute;
+            opacity: 0.05;
+            font-size: 3rem;
+            z-index: 0;
+        }
+        .paw-1 { top: 10%; left: 5%; }
+        .paw-2 { top: 30%; right: 10%; }
+        .paw-3 { bottom: 20%; left: 15%; }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-paw"></i>
-                <h1>AfghanPawer</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="nav-link" data-page="home">Home</a></li>
-                    <li><a href="#" class="nav-link" data-page="about">About</a></li>
-                    <li><a href="#" class="nav-link" data-page="contact">Contact</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <button class="btn btn-outline" id="login-btn">Login</button>
-                <button class="btn btn-primary" id="register-btn">Register</button>
+
+    <div id="app">
+        <!-- Dog-themed decorative elements -->
+        <i class="fas fa-paw dog-paw paw-1"></i>
+        <i class="fas fa-paw dog-paw paw-2"></i>
+        <i class="fas fa-paw dog-paw paw-3"></i>
+        
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-dog logo-icon"></i>
+                    <div class="logo-text">
+                        <h1>DOGS HUB</h1>
+                        <span>Token Airdrop</span>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </header>
 
-        <!-- Main Content (Changes based on authentication) -->
+        <section class="profile-section">
+            <img id="user-photo" src="" alt="User Photo">
+            <div class="user-details">
+                <h2 id="user-name">Loading... <i class="fas fa-check-circle verified-icon"></i></h2>
+                <p>Welcome to DOGS HUB!</p>
+            </div>
+            <div class="token-balance">
+                <div class="amount" id="user-points">0</div>
+                <div class="label">DOGS HUB</div>
+            </div>
+        </section>
+
         <main id="main-content">
-            <!-- Home Page (Visible when not logged in) -->
-            <section id="home-page" class="page active">
-                <div class="balance-card">
-                    <div class="balance-label">Welcome to AfghanPawer</div>
-                    <div class="balance-amount">Crypto Investment Platform</div>
-                    <div class="balance-label">Register now to start earning daily profits with our VIP system</div>
-                </div>
-
-                <div class="actions">
-                    <div class="action-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-crown"></i>
-                        </div>
-                        <div class="action-label">VIP System</div>
-                        <div class="action-desc">Earn 3-4% daily profits</div>
+            <!-- Home Page -->
+            <div id="home-page" class="page active">
+                <h2 class="page-title">Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-eye icon"></i>
+                        <h3>Daily Ads Watched</h3>
+                        <p><span id="daily-ads-watched">0</span> / 25</p>
                     </div>
-                    <div class="action-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                        <div class="action-label">Referral Program</div>
-                        <div class="action-desc">Earn 10% from referrals</div>
+                    <div class="stat-card">
+                        <i class="fas fa-users icon"></i>
+                        <h3>Total Referrals</h3>
+                        <p id="referral-count">0</p>
                     </div>
                 </div>
-
-                <div class="vip-section">
-                    <div class="section-title">
-                        <i class="fas fa-crown"></i>
-                        <span>VIP Levels</span>
-                    </div>
-                    
-                    <div class="vip-levels">
-                        <div class="vip-level vip1">
-                            <div class="vip-name">VIP 1</div>
-                            <div class="vip-price">$8</div>
-                            <div class="vip-profit">3% Daily Profit</div>
-                        </div>
-                        <div class="vip-level vip2">
-                            <div class="vip-name">VIP 2</div>
-                            <div class="vip-price">$14</div>
-                            <div class="vip-profit">3.2% Daily Profit</div>
-                        </div>
-                        <div class="vip-level vip3">
-                            <div class="vip-name">VIP 3</div>
-                            <div class="vip-price">$18</div>
-                            <div class="vip-profit">3.5% Daily Profit</div>
-                        </div>
-                        <div class="vip-level vip4">
-                            <div class="vip-name">VIP 4</div>
-                            <div class="vip-price">$30</div>
-                            <div class="vip-profit">4% Daily Profit</div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="referral-section">
-                    <div class="section-title">
-                        <i class="fas fa-user-friends"></i>
-                        <span>Referral System</span>
+                    <h3>Refer & Earn More Tokens!</h3>
+                    <p>Share your link to get bonus DOGS HUB tokens.</p>
+                    <div class="referral-input-group">
+                        <input type="text" id="referral-link" readonly>
+                        <button id="copy-ref-link-btn">Copy</button>
                     </div>
-                    
-                    <p>Invite friends and earn 10% of their investments!</p>
-                    <p>Register with a referral code to get started.</p>
                 </div>
-            </section>
+            </div>
 
-            <!-- Dashboard (Visible when logged in) -->
-            <section id="dashboard" class="page dashboard">
-                <div class="user-info">
-                    <div class="avatar">
-                        <i class="fas fa-user"></i>
+            <!-- Tasks Page -->
+            <div id="tasks-page" class="page">
+                <h2 class="page-title">Complete Tasks</h2>
+                <div class="tasks-container">
+                    <div class="task-card">
+                        <i class="fas fa-play-circle task-icon"></i>
+                        <h3>Watch a Rewarded Ad</h3>
+                        <div class="reward-badge">+0.25 DOGS HUB</div>
+                        <p>Earn tokens for every ad you watch.</p>
+                        <button id="watch-ad-btn" class="action-btn">
+                            <span class="btn-text">Watch Ad</span>
+                            <span class="btn-loader"></span>
+                        </button>
                     </div>
-                    <div class="user-details">
-                        <h2 id="dashboard-username">User</h2>
-                        <p id="dashboard-email">Email</p>
-                        <div class="user-address" id="user-address">Your BNB Address: Loading...</div>
+                    <div class="task-card">
+                        <i class="fab fa-telegram task-icon"></i>
+                        <h3>Join Our Channel</h3>
+                        <div class="reward-badge">+10 DOGS HUB</div>
+                        <p>Stay updated with the latest news.</p>
+                        <button id="join-channel-btn" class="action-btn">Join & Claim Bonus</button>
                     </div>
-                    <div class="vip-badge" id="vip-badge">No VIP</div>
-                </div>
-
-                <div class="balance-card">
-                    <div class="balance-label">Your Balance</div>
-                    <div class="balance-amount">$<span id="balance">0.00</span></div>
-                    <div class="balance-label">Available for withdrawal</div>
-                </div>
-
-                <div class="actions">
-                    <div class="action-btn" id="recharge-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-plus-circle"></i>
-                        </div>
-                        <div class="action-label">Recharge</div>
-                    </div>
-                    <div class="action-btn" id="withdraw-btn">
-                        <div class="action-icon">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <div class="action-label">Withdraw</div>
+                    <div class="task-card">
+                        <i class="fas fa-users task-icon"></i>
+                        <h3>Join Our Group</h3>
+                        <div class="reward-badge">+2 DOGS HUB</div>
+                        <p>Connect with our community.</p>
+                        <button id="join-group-btn" class="action-btn">Join & Claim Bonus</button>
                     </div>
                 </div>
-
-                <div class="vip-section">
-                    <div class="section-title">
-                        <i class="fas fa-crown"></i>
-                        <span>VIP Levels</span>
-                    </div>
-                    
-                    <div class="vip-levels">
-                        <div class="vip-level vip1" data-level="1" data-price="8" data-profit="3">
-                            <div class="vip-name">VIP 1</div>
-                            <div class="vip-price">$8</div>
-                            <div class="vip-profit">3% Daily Profit</div>
-                        </div>
-                        <div class="vip-level vip2" data-level="2" data-price="14" data-profit="3.2">
-                            <div class="vip-name">VIP 2</div>
-                            <div class="vip-price">$14</div>
-                            <div class="vip-profit">3.2% Daily Profit</div>
-                        </div>
-                        <div class="vip-level vip3" data-level="3" data-price="18" data-profit="3.5">
-                            <div class="vip-name">VIP 3</div>
-                            <div class="vip-price">$18</div>
-                            <div class="vip-profit">3.5% Daily Profit</div>
-                        </div>
-                        <div class="vip-level vip4" data-level="4" data-price="30" data-profit="4">
-                            <div class="vip-name">VIP 4</div>
-                            <div class="vip-price">$30</div>
-                            <div class="vip-profit">4% Daily Profit</div>
-                        </div>
-                    </div>
-                    
-                    <button class="vip-btn" id="buy-vip-btn" disabled>Buy VIP</button>
+            </div>
+            
+            <!-- Withdraw Page -->
+            <div id="withdraw-page" class="page">
+                <h2 class="page-title">Withdraw</h2>
+                <div class="withdraw-info">
+                    <p>Minimum 50 DOGS HUB tokens required to withdraw.</p>
                 </div>
-
-                <div class="daily-profit-section">
-                    <div class="section-title">
-                        <i class="fas fa-coins"></i>
-                        <span>Daily Profit</span>
+                <form id="withdraw-form">
+                    <div class="form-group">
+                        <label for="withdraw-method">Withdrawal Method:</label>
+                        <select id="withdraw-method" required>
+                            <option value="Bkash">Bkash</option>
+                            <option value="Nagad">Nagad</option>
+                            <option value="Binance">Binance</option>
+                        </select>
                     </div>
-                    
-                    <div class="profit-timer" id="profit-timer">Next profit available in: 24:00:00</div>
-                    
-                    <button class="profit-btn" id="profit-btn" disabled>Claim Daily Profit</button>
-                </div>
-
-                <div class="referral-section">
-                    <div class="section-title">
-                        <i class="fas fa-user-friends"></i>
-                        <span>Referral System</span>
+                    <div class="form-group">
+                        <label for="account-number">Account Number/ID:</label>
+                        <input type="text" id="account-number" placeholder="e.g., 012345..." required>
                     </div>
-                    
-                    <p>Invite friends and earn 10% of their investments!</p>
-                    
-                    <div class="referral-code" id="referral-code">Loading...</div>
-                    
-                    <div class="referral-actions">
-                        <button class="ref-action-btn" id="copy-ref-btn">Copy Link</button>
-                        <button class="ref-action-btn" id="copy-code-btn">Copy Code</button>
+                    <div class="form-group">
+                        <label for="amount">Tokens to Withdraw:</label>
+                        <input type="number" id="amount" placeholder="e.g., 50" required min="50">
                     </div>
-                    
-                    <div class="referral-stats">
-                        <div class="stat-card">
-                            <div class="stat-value" id="referrals-count">0</div>
-                            <div class="stat-label">Total Referrals</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">$<span id="referral-earnings">0.00</span></div>
-                            <div class="stat-label">Referral Earnings</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recharge-section">
-                    <div class="section-title">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Recharge Account</span>
-                    </div>
-                    
-                    <p>Minimum recharge amount: $8.00 (BNB only)</p>
-                    
-                    <div class="recharge-options">
-                        <div class="recharge-option" data-amount="8">
-                            <div class="recharge-amount">$8</div>
-                        </div>
-                        <div class="recharge-option selected" data-amount="20">
-                            <div class="recharge-amount">$20</div>
-                        </div>
-                        <div class="recharge-option" data-amount="50">
-                            <div class="recharge-amount">$50</div>
-                        </div>
-                        <div class="recharge-option" data-amount="100">
-                            <div class="recharge-amount">$100</div>
-                        </div>
-                    </div>
-                    
-                    <div class="recharge-address" id="recharge-address">
-                        Your personal BNB address will appear here after registration
-                    </div>
-                    
-                    <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
-                        Send BNB to this address. After 3 network confirmations, your balance will be updated automatically.
-                    </p>
-                </div>
-
-                <div class="history-section">
-                    <div class="section-title">
-                        <i class="fas fa-history"></i>
-                        <span>Transaction History</span>
-                    </div>
-                    
-                    <div class="history-tabs">
-                        <div class="history-tab active" data-tab="all">All</div>
-                        <div class="history-tab" data-tab="recharge">Recharge</div>
-                        <div class="history-tab" data-tab="withdraw">Withdraw</div>
-                        <div class="history-tab" data-tab="profit">Profit</div>
-                    </div>
-                    
-                    <div class="history-list" id="history-list">
-                        <div class="loading">Loading transactions...</div>
-                    </div>
-                </div>
-            </section>
+                    <button type="submit" id="withdraw-submit-btn" class="action-btn">
+                        <span class="btn-text">Submit Request</span>
+                        <span class="btn-loader"></span>
+                    </button>
+                </form>
+            </div>
         </main>
 
-        <footer>
-            <p>AfghanPawer &copy; 2023 - All rights reserved</p>
-        </footer>
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
+            <button class="nav-btn" data-page="tasks-page"><i class="fas fa-tasks"></i><span>Tasks</span></button>
+            <button class="nav-btn" data-page="withdraw-page"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+        </nav>
     </div>
 
-    <!-- Register Modal -->
-    <div class="modal" id="register-modal">
-        <div class="modal-content fade-in">
-            <div class="modal-header">
-                <div class="modal-title">Create Account</div>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form id="register-form">
-                <div class="form-group">
-                    <label for="reg-email">Email</label>
-                    <input type="email" id="reg-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-password">Password</label>
-                    <input type="password" id="reg-password" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-refcode">Referral Code (Optional)</label>
-                    <input type="text" id="reg-refcode">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
-            </form>
-            <div class="form-footer">
-                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
-            </div>
+    <div id="loading-modal" class="modal">
+        <div class="modal-content">
+            <div class="loader"></div>
+            <p>Loading Ad...</p>
         </div>
     </div>
-
-    <!-- Login Modal -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content fade-in">
-            <div class="modal-header">
-                <div class="modal-title">Login</div>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-            </form>
-            <div class="form-footer">
-                <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Withdraw Modal -->
-    <div class="modal" id="withdraw-modal">
-        <div class="modal-content fade-in">
-            <div class="modal-header">
-                <div class="modal-title">Withdraw Funds</div>
-                <button class="close-modal">&times;</button>
-            </div>
-            <p>Minimum withdrawal amount: $5.00</p>
-            
-            <div class="form-group">
-                <label for="withdraw-amount">Amount:</label>
-                <input type="number" id="withdraw-amount" min="5" step="0.01" value="5">
-            </div>
-            
-            <div class="form-group">
-                <label for="withdraw-address">Your BNB Address:</label>
-                <input type="text" id="withdraw-address" placeholder="Enter your BNB address">
-            </div>
-            
-            <button class="recharge-btn" id="confirm-withdraw">Request Withdrawal</button>
-        </div>
-    </div>
-
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Adexora Ad SDK -->
+    <script src="https://adexora.com/cdn/ads.js?id=144"></script>
+    
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD4UbW_Iy4kUWH3V70Q1mWCI4-_KFk6ku4",
-            authDomain: "onlinewark-a0147.firebaseapp.com",
-            databaseURL: "https://onlinewark-a0147-default-rtdb.firebaseio.com",
-            projectId: "onlinewark-a0147",
-            storageBucket: "onlinewark-a0147.appspot.com",
-            messagingSenderId: "92155538620",
-            appId: "1:92155538620:android:5e198a8eea6bf17f61f4b9"
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            const tg = window.Telegram.WebApp;
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+            // --- Configuration ---
+            const BOT_TOKEN = "8024276309:AAGdwzEHGgqA7Qv-vSMBrJLLjhqp-mtXshI";
+            const BOT_USERNAME = "Dogs_Hub_Bot";
+            const ADMIN_CHAT_ID = "6096328186";
+            const CHANNEL_LINK = "https://t.me/BotsMakChannel";
+            const GROUP_LINK = "https://t.me/BotsMakChannel";
+            const DAILY_AD_LIMIT = 25;
+            const TOKENS_PER_AD = 0.25;
+            const CHANNEL_JOIN_BONUS = 10;
+            const GROUP_JOIN_BONUS = 2;
+            const MIN_WITHDRAW_TOKENS = 50;
 
-        // VIP levels configuration
-        const vipLevels = {
-            1: { price: 8, profit: 3 },
-            2: { price: 14, profit: 3.2 },
-            3: { price: 18, profit: 3.5 },
-            4: { price: 30, profit: 4 }
-        };
+            // --- DOM Elements ---
+            const userPhotoElem = document.getElementById('user-photo');
+            const userNameElem = document.getElementById('user-name');
+            const userPointsElem = document.getElementById('user-points');
+            const dailyAdsWatchedElem = document.getElementById('daily-ads-watched');
+            const referralCountElem = document.getElementById('referral-count');
+            const watchAdBtn = document.getElementById('watch-ad-btn');
+            const joinChannelBtn = document.getElementById('join-channel-btn');
+            const joinGroupBtn = document.getElementById('join-group-btn');
+            const withdrawForm = document.getElementById('withdraw-form');
+            const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
+            const referralLinkElem = document.getElementById('referral-link');
+            const copyRefLinkBtn = document.getElementById('copy-ref-link-btn');
+            const loadingModal = document.getElementById('loading-modal');
+            const themeToggleBtn = document.getElementById('theme-toggle');
 
-        // Company USDT BEP20 address for VIP purchases
-        const companyUsdtAddress = "0x5Dff7E7F810AF7C0f45EF9902c3ba0E8ED3Aa497";
+            // --- State Management ---
+            let userState = {
+                tokens: 0,
+                dailyAdWatchCount: 0,
+                lastAdWatchDate: null,
+                referrals: [],
+                hasJoinedChannel: false,
+                hasJoinedGroup: false,
+                userId: null
+            };
 
-        // Global user data
-        let userData = null;
-        let currentUser = null;
+            const saveState = () => {
+                if(userState.userId) {
+                    localStorage.setItem(`userState_${userState.userId}`, JSON.stringify(userState));
+                }
+            };
 
-        // Check URL for referral code
-        function getReferralCodeFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('ref') || '';
-        }
+            const loadState = (userId) => {
+                const savedState = localStorage.getItem(`userState_${userId}`);
+                if (savedState) {
+                    userState = JSON.parse(savedState);
+                    if (userState.hasJoinedGroup === undefined) userState.hasJoinedGroup = false;
+                }
+            };
+            
+            // --- Core Functions ---
+            const initApp = () => {
+                tg.ready();
+                tg.expand();
+                
+                // Set initial theme based on Telegram theme
+                document.body.className = `${tg.colorScheme}-theme`;
+                updateThemeIcon();
 
-        // Generate a unique BNB address for user
-        function generateBNBAddress() {
-            // In a real app, this would generate a unique address
-            // For demo, we'll create a pseudo-random address
-            const chars = '0123456789abcdef';
-            let address = '0x';
-            for (let i = 0; i < 40; i++) {
-                address += chars[Math.floor(Math.random() * chars.length)];
-            }
-            return address;
-        }
-
-        // Generate referral code
-        function generateReferralCode() {
-            return 'AFG' + Math.random().toString(36).substring(2, 8).toUpperCase();
-        }
-
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is already logged in
-            auth.onAuthStateChanged((user) => {
+                const user = tg.initDataUnsafe.user;
+                if (!user || !user.id) {
+                    tg.showAlert("Could not verify user. Please open this app through Telegram.", () => tg.close());
+                    return;
+                }
+                
+                userState.userId = user.id;
+                loadState(user.id);
+                
+                const today = new Date().toISOString().slice(0, 10);
+                if (userState.lastAdWatchDate !== today) {
+                    userState.dailyAdWatchCount = 0;
+                    userState.lastAdWatchDate = today;
+                }
+                
+                updateUI();
+                setupNavigation();
+                setupEventListeners();
+                saveState();
+            };
+            
+            const updateUI = () => {
+                const user = tg.initDataUnsafe.user;
                 if (user) {
-                    currentUser = user;
-                    loadUserData();
-                    showDashboard();
-                } else {
-                    showHomePage();
-                    
-                    // Pre-fill referral code if present in URL
-                    const refCode = getReferralCodeFromURL();
-                    if (refCode) {
-                        document.getElementById('reg-refcode').value = refCode;
-                    }
+                    userPhotoElem.src = user.photo_url || 'https://i.imgur.com/placeholder.png';
+                    userNameElem.innerHTML = `${user.first_name || ''} ${user.last_name || ''} <i class="fas fa-check-circle verified-icon"></i>`;
                 }
-            });
+                
+                userPointsElem.textContent = userState.tokens.toFixed(2);
+                dailyAdsWatchedElem.textContent = userState.dailyAdWatchCount;
+                referralCountElem.textContent = userState.referrals.length;
 
-            // Register modal
-            document.getElementById('register-btn').addEventListener('click', () => {
-                document.getElementById('register-modal').style.display = 'flex';
-            });
+                referralLinkElem.value = `https://t.me/${BOT_USERNAME}?start=ref_${userState.userId}`;
 
-            // Login modal
-            document.getElementById('login-btn').addEventListener('click', () => {
-                document.getElementById('login-modal').style.display = 'flex';
-            });
-
-            // Switch between login and register modals
-            document.getElementById('show-login').addEventListener('click', (e) => {
-                e.preventDefault();
-                document.getElementById('register-modal').style.display = 'none';
-                document.getElementById('login-modal').style.display = 'flex';
-            });
-
-            document.getElementById('show-register').addEventListener('click', (e) => {
-                e.preventDefault();
-                document.getElementById('login-modal').style.display = 'none';
-                document.getElementById('register-modal').style.display = 'flex';
-            });
-
-            // Close modals
-            document.querySelectorAll('.close-modal').forEach(button => {
-                button.addEventListener('click', function() {
-                    this.closest('.modal').style.display = 'none';
-                });
-            });
-
-            // Close modal when clicking outside
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
+                // Update task button states
+                if (userState.hasJoinedChannel) {
+                    joinChannelBtn.textContent = 'Bonus Claimed';
+                    joinChannelBtn.disabled = true;
                 }
-            });
+                if (userState.hasJoinedGroup) {
+                    joinGroupBtn.textContent = 'Bonus Claimed';
+                    joinGroupBtn.disabled = true;
+                }
+            };
+            
+            const setupEventListeners = () => {
+                watchAdBtn.addEventListener('click', handleWatchAd);
+                joinChannelBtn.addEventListener('click', handleJoinChannel);
+                joinGroupBtn.addEventListener('click', handleJoinGroup);
+                withdrawForm.addEventListener('submit', handleWithdraw);
+                copyRefLinkBtn.addEventListener('click', copyReferralLink);
+                themeToggleBtn.addEventListener('click', toggleTheme);
+            };
 
-            // Register form submission
-            document.getElementById('register-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const email = document.getElementById('reg-email').value;
-                const password = document.getElementById('reg-password').value;
-                const refCode = document.getElementById('reg-refcode').value;
-
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        // User registered successfully
-                        const user = userCredential.user;
-                        
-                        // Generate user data
-                        const userRefCode = generateReferralCode();
-                        const bnbAddress = generateBNBAddress();
-                        
-                        const newUserData = {
-                            email: email,
-                            referralCode: userRefCode,
-                            bnbAddress: bnbAddress,
-                            balance: 0,
-                            vipLevel: 0,
-                            lastProfitClaim: 0,
-                            referrals: 0,
-                            referralEarnings: 0,
-                            rechargeTotal: 0,
-                            withdrawTotal: 0,
-                            profitTotal: 0,
-                            transactions: [],
-                            joinedDate: new Date().toISOString(),
-                            referredBy: refCode || null
-                        };
-                        
-                        // Save user data to Firebase
-                        database.ref('users/' + user.uid).set(newUserData)
-                            .then(() => {
-                                // Close modal and show dashboard
-                                document.getElementById('register-modal').style.display = 'none';
-                                
-                                // If user was referred, update referrer's data
-                                if (refCode) {
-                                    // Find user with this referral code
-                                    database.ref('users').orderByChild('referralCode').equalTo(refCode).once('value')
-                                        .then((snapshot) => {
-                                            if (snapshot.exists()) {
-                                                const referrerData = snapshot.val();
-                                                const referrerId = Object.keys(referrerData)[0];
-                                                
-                                                // Update referrer's referral count
-                                                database.ref('users/' + referrerId + '/referrals').transaction((current) => {
-                                                    return (current || 0) + 1;
-                                                });
-                                            }
-                                        });
-                                }
-                            })
-                            .catch((error) => {
-                                console.error('Error saving user data:', error);
-                                alert('Error creating account: ' + error.message);
-                            });
-                    })
-                    .catch((error) => {
-                        alert('Error creating account: ' + error.message);
-                    });
-            });
-
-            // Login form submission
-            document.getElementById('login-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-
-                auth.signInWithEmailAndPassword(email, password)
+            const handleWatchAd = () => {
+                if (userState.dailyAdWatchCount >= DAILY_AD_LIMIT) {
+                    tg.showAlert("You have reached your daily ad watch limit."); 
+                    return;
+                }
+                
+                loadingModal.style.display = 'flex';
+                
+                // Use Adexora ad system
+                window.showAdexora()
                     .then(() => {
-                        document.getElementById('login-modal').style.display = 'none';
+                        userState.tokens += TOKENS_PER_AD;
+                        userState.dailyAdWatchCount++;
+                        saveState();
+                        updateUI();
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert(`Congratulations! You've earned ${TOKENS_PER_AD} DOGS HUB tokens.`);
                     })
                     .catch((error) => {
-                        alert('Error signing in: ' + error.message);
+                        console.error("Ad error:", error);
+                        tg.showAlert("Ad could not be loaded. Please try again later.");
+                    })
+                    .finally(() => {
+                        loadingModal.style.display = 'none';
                     });
-            });
-
-            // Logout functionality
-            document.addEventListener('click', (e) => {
-                if (e.target.id === 'logout-btn') {
-                    auth.signOut().then(() => {
-                        showHomePage();
-                    });
+            };
+            
+            const handleJoinChannel = () => {
+                if(userState.hasJoinedChannel) {
+                    tg.showAlert('You have already claimed this bonus.'); 
+                    return;
                 }
-            });
+                tg.openTelegramLink(CHANNEL_LINK);
+                setTimeout(() => {
+                    userState.tokens += CHANNEL_JOIN_BONUS;
+                    userState.hasJoinedChannel = true;
+                    tg.showAlert(`Thank you! You received ${CHANNEL_JOIN_BONUS} bonus DOGS HUB tokens.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
 
-            // Initialize other functionality
-            initAppFunctionality();
+            const handleJoinGroup = () => {
+                if(userState.hasJoinedGroup) {
+                    tg.showAlert('You have already claimed this bonus.'); 
+                    return;
+                }
+                tg.openTelegramLink(GROUP_LINK);
+                setTimeout(() => {
+                    userState.tokens += GROUP_JOIN_BONUS;
+                    userState.hasJoinedGroup = true;
+                    tg.showAlert(`Thank you! You received ${GROUP_JOIN_BONUS} bonus DOGS HUB tokens.`);
+                    saveState();
+                    updateUI();
+                }, 3000);
+            };
+
+            const handleWithdraw = async (e) => {
+                e.preventDefault();
+                const method = document.getElementById('withdraw-method').value;
+                const accountNumber = document.getElementById('account-number').value;
+                const amount = parseInt(document.getElementById('amount').value, 10);
+
+                if (isNaN(amount) || amount <= 0) { 
+                    tg.showAlert("Please enter a valid amount."); 
+                    return; 
+                }
+                if (amount < MIN_WITHDRAW_TOKENS) { 
+                    tg.showAlert(`Minimum withdrawal is ${MIN_WITHDRAW_TOKENS} DOGS HUB tokens.`); 
+                    return; 
+                }
+                if (amount > userState.tokens) { 
+                    tg.showAlert("You don't have enough tokens."); 
+                    return; 
+                }
+
+                withdrawSubmitBtn.classList.add('loading');
+                withdrawSubmitBtn.disabled = true;
+
+                userState.tokens -= amount;
+                saveState();
+                updateUI();
+                
+                const user = tg.initDataUnsafe.user;
+                const message = `<b>New Withdraw Request!</b>\n-----------------------------------\n<b>User:</b> ${user.first_name || ''} ${user.last_name || ''} (@${user.username || 'N/A'})\n<b>User ID:</b> <code>${user.id}</code>\n-----------------------------------\n<b>Method:</b> ${method}\n<b>Account:</b> <code>${accountNumber}</code>\n<b>Amount:</b> ${amount} DOGS HUB Tokens\n-----------------------------------\n<b>Date:</b> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}`;
+                
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text: message, parse_mode: 'HTML'})
+                    });
+                    const result = await response.json();
+                    if (result.ok) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert("Withdrawal request submitted successfully!");
+                        withdrawForm.reset();
+                    } else { 
+                        throw new Error(result.description); 
+                    }
+                } catch (error) {
+                    tg.HapticFeedback.notificationOccurred('error');
+                    tg.showAlert("Failed to submit request. Your tokens have been returned.");
+                    userState.tokens += amount;
+                    saveState();
+                    updateUI();
+                } finally {
+                    withdrawSubmitBtn.classList.remove('loading');
+                    withdrawSubmitBtn.disabled = false;
+                }
+            };
+            
+            const copyReferralLink = () => {
+                navigator.clipboard.writeText(referralLinkElem.value).then(() => {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Referral link copied!");
+                });
+            };
+
+            const setupNavigation = () => {
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const pages = document.querySelectorAll('.page');
+                navButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const pageId = button.dataset.page;
+                        pages.forEach(page => page.classList.remove('active'));
+                        document.getElementById(pageId).classList.add('active');
+                        navButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                    });
+                });
+            };
+
+            const toggleTheme = () => {
+                if (document.body.classList.contains('light-theme')) {
+                    document.body.classList.replace('light-theme', 'dark-theme');
+                } else {
+                    document.body.classList.replace('dark-theme', 'light-theme');
+                }
+                updateThemeIcon();
+            };
+
+            const updateThemeIcon = () => {
+                const icon = themeToggleBtn.querySelector('i');
+                if (document.body.classList.contains('light-theme')) {
+                    icon.classList.replace('fa-sun', 'fa-moon');
+                } else {
+                    icon.classList.replace('fa-moon', 'fa-sun');
+                }
+            };
+
+            initApp();
         });
-
-        // Show home page (for non-authenticated users)
-        function showHomePage() {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById('home-page').classList.add('active');
-            
-            // Update auth buttons
-            document.getElementById('login-btn').style.display = 'inline-block';
-            document.getElementById('register-btn').style.display = 'inline-block';
-            
-            // Remove logout button if it exists
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.remove();
-            }
-        }
-
-        // Show dashboard (for authenticated users)
-        function showDashboard() {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById('dashboard').classList.add('active');
-            
-            // Update auth buttons to show logout
-            document.getElementById('login-btn').style.display = 'none';
-            document.getElementById('register-btn').style.display = 'none';
-            
-            // Add logout button if it doesn't exist
-            if (!document.getElementById('logout-btn')) {
-                const logoutBtn = document.createElement('button');
-                logoutBtn.id = 'logout-btn';
-                logoutBtn.className = 'btn btn-outline';
-                logoutBtn.textContent = 'Logout';
-                document.querySelector('.auth-buttons').appendChild(logoutBtn);
-            }
-        }
-
-        // Load user data from Firebase
-        function loadUserData() {
-            if (!currentUser) return;
-            
-            const userRef = database.ref('users/' + currentUser.uid);
-            
-            userRef.on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    userData = snapshot.val();
-                    updateDashboard();
-                }
-            });
-        }
-
-        // Update dashboard with user data
-        function updateDashboard() {
-            if (!userData || !currentUser) return;
-            
-            // Update user info
-            document.getElementById('dashboard-username').textContent = currentUser.email.split('@')[0];
-            document.getElementById('dashboard-email').textContent = currentUser.email;
-            document.getElementById('user-address').textContent = 'Your BNB Address: ' + userData.bnbAddress;
-            
-            // Update balance
-            document.getElementById('balance').textContent = userData.balance.toFixed(2);
-            
-            // Update referral code
-            document.getElementById('referral-code').textContent = userData.referralCode;
-            
-            // Update referral stats
-            document.getElementById('referrals-count').textContent = userData.referrals || 0;
-            document.getElementById('referral-earnings').textContent = (userData.referralEarnings || 0).toFixed(2);
-            
-            // Update VIP badge
-            const vipBadge = document.getElementById('vip-badge');
-            if (userData.vipLevel > 0) {
-                vipBadge.textContent = `VIP ${userData.vipLevel}`;
-                vipBadge.style.background = getVipColor(userData.vipLevel);
-            } else {
-                vipBadge.textContent = 'No VIP';
-                vipBadge.style.background = '#6c757d';
-            }
-            
-            // Update recharge address
-            document.getElementById('recharge-address').textContent = userData.bnbAddress;
-            
-            // Update transaction history
-            updateHistory();
-            
-            // Update VIP purchase button
-            updateVipButton();
-            
-            // Update profit claim button
-            updateProfitButton();
-        }
-
-        // Get VIP color based on level
-        function getVipColor(level) {
-            switch(level) {
-                case 1: return '#ffd700';
-                case 2: return '#c0c0c0';
-                case 3: return '#cd7f32';
-                case 4: return '#e5e4e2';
-                default: return '#6c757d';
-            }
-        }
-
-        // Initialize app functionality
-        function initAppFunctionality() {
-            // VIP level selection
-            document.addEventListener('click', (e) => {
-                if (e.target.closest('.vip-level')) {
-                    const vipLevel = e.target.closest('.vip-level');
-                    document.querySelectorAll('.vip-level').forEach(level => {
-                        level.classList.remove('selected');
-                    });
-                    vipLevel.classList.add('selected');
-                    updateVipButton();
-                }
-            });
-
-            // Recharge option selection
-            document.addEventListener('click', (e) => {
-                if (e.target.closest('.recharge-option')) {
-                    const option = e.target.closest('.recharge-option');
-                    document.querySelectorAll('.recharge-option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    option.classList.add('selected');
-                }
-            });
-
-            // Copy referral link
-            document.getElementById('copy-ref-btn').addEventListener('click', () => {
-                const referralLink = window.location.origin + '?ref=' + userData.referralCode;
-                navigator.clipboard.writeText(referralLink).then(() => {
-                    alert('Referral link copied to clipboard!');
-                });
-            });
-
-            // Copy referral code
-            document.getElementById('copy-code-btn').addEventListener('click', () => {
-                navigator.clipboard.writeText(userData.referralCode).then(() => {
-                    alert('Referral code copied to clipboard!');
-                });
-            });
-
-            // Buy VIP
-            document.getElementById('buy-vip-btn').addEventListener('click', () => {
-                const selectedVip = document.querySelector('.vip-level.selected');
-                if (!selectedVip) return;
-                
-                const vipLevel = parseInt(selectedVip.getAttribute('data-level'));
-                const vipPrice = parseFloat(selectedVip.getAttribute('data-price'));
-                
-                if (userData.balance >= vipPrice && userData.vipLevel < vipLevel) {
-                    if (confirm(`Are you sure you want to purchase VIP ${vipLevel} for $${vipPrice}?`)) {
-                        // Process VIP purchase
-                        userData.balance -= vipPrice;
-                        userData.vipLevel = vipLevel;
-                        
-                        // Add transaction
-                        addTransaction('vip', -vipPrice, `VIP ${vipLevel} Purchase`);
-                        
-                        // Simulate blockchain transfer (5 seconds)
-                        alert('Processing VIP purchase... Please wait 5 seconds.');
-                        
-                        setTimeout(() => {
-                            // Update Firebase
-                            database.ref('users/' + currentUser.uid).set(userData);
-                            
-                            alert(`Congratulations! You are now VIP ${vipLevel}. You can now claim daily profits.`);
-                        }, 5000);
-                    }
-                }
-            });
-
-            // Claim daily profit
-            document.getElementById('profit-btn').addEventListener('click', () => {
-                if (userData.vipLevel > 0) {
-                    const now = new Date().getTime();
-                    const lastClaim = userData.lastProfitClaim || 0;
-                    const nextClaimTime = lastClaim + (24 * 60 * 60 * 1000);
-                    
-                    if (now >= nextClaimTime) {
-                        const profitPercentage = vipLevels[userData.vipLevel].profit;
-                        const profitAmount = (userData.rechargeTotal * profitPercentage) / 100;
-                        
-                        userData.balance += profitAmount;
-                        userData.lastProfitClaim = now;
-                        userData.profitTotal += profitAmount;
-                        
-                        // Add transaction
-                        addTransaction('profit', profitAmount, `Daily Profit (VIP ${userData.vipLevel})`);
-                        
-                        // Update Firebase
-                        database.ref('users/' + currentUser.uid).set(userData);
-                        
-                        alert(`You've received $${profitAmount.toFixed(2)} daily profit!`);
-                    }
-                }
-            });
-
-            // Withdraw functionality
-            document.getElementById('withdraw-btn').addEventListener('click', () => {
-                if (userData.balance < 5) {
-                    alert('Minimum withdrawal amount is $5.00');
-                    return;
-                }
-                document.getElementById('withdraw-modal').style.display = 'flex';
-            });
-
-            document.getElementById('confirm-withdraw').addEventListener('click', () => {
-                const amount = parseFloat(document.getElementById('withdraw-amount').value);
-                const address = document.getElementById('withdraw-address').value;
-                
-                if (amount < 5) {
-                    alert('Minimum withdrawal amount is $5.00');
-                    return;
-                }
-                
-                if (amount > userData.balance) {
-                    alert('Insufficient balance');
-                    return;
-                }
-                
-                if (!address) {
-                    alert('Please enter your BNB address');
-                    return;
-                }
-                
-                // Process withdrawal
-                userData.balance -= amount;
-                userData.withdrawTotal += amount;
-                
-                // Add transaction
-                addTransaction('withdraw', -amount, `Withdrawal to ${address.substring(0, 10)}...`);
-                
-                // Update Firebase
-                database.ref('users/' + currentUser.uid).set(userData);
-                
-                document.getElementById('withdraw-modal').style.display = 'none';
-                alert(`Your withdrawal of $${amount.toFixed(2)} has been submitted. It will be processed within 24 hours.`);
-            });
-
-            // History tab switching
-            document.querySelectorAll('.history-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.history-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    tab.classList.add('active');
-                    updateHistory();
-                });
-            });
-        }
-
-        // Update VIP purchase button state
-        function updateVipButton() {
-            if (!userData) return;
-            
-            const buyVipBtn = document.getElementById('buy-vip-btn');
-            const selectedVip = document.querySelector('.vip-level.selected');
-            
-            if (selectedVip) {
-                const vipLevel = parseInt(selectedVip.getAttribute('data-level'));
-                const vipPrice = parseFloat(selectedVip.getAttribute('data-price'));
-                
-                if (userData.balance >= vipPrice && userData.vipLevel < vipLevel) {
-                    buyVipBtn.disabled = false;
-                    buyVipBtn.textContent = `Buy VIP ${vipLevel} - $${vipPrice}`;
-                } else {
-                    buyVipBtn.disabled = true;
-                    if (userData.vipLevel >= vipLevel) {
-                        buyVipBtn.textContent = 'Already Purchased';
-                    } else {
-                        buyVipBtn.textContent = 'Insufficient Balance';
-                    }
-                }
-            }
-        }
-
-        // Update profit claim button state
-        function updateProfitButton() {
-            if (!userData) return;
-            
-            const profitBtn = document.getElementById('profit-btn');
-            const profitTimer = document.getElementById('profit-timer');
-            
-            if (userData.vipLevel > 0) {
-                const now = new Date().getTime();
-                const lastClaim = userData.lastProfitClaim || 0;
-                const nextClaimTime = lastClaim + (24 * 60 * 60 * 1000);
-                
-                if (now >= nextClaimTime) {
-                    profitBtn.disabled = false;
-                    profitBtn.textContent = `Claim Daily Profit (${vipLevels[userData.vipLevel].profit}%)`;
-                    profitTimer.textContent = 'Profit available now!';
-                } else {
-                    profitBtn.disabled = true;
-                    const timeLeft = nextClaimTime - now;
-                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                    
-                    profitTimer.textContent = `Next profit available in: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    profitBtn.textContent = 'Profit Claimed Today';
-                }
-            } else {
-                profitBtn.disabled = true;
-                profitBtn.textContent = 'VIP Required';
-                profitTimer.textContent = 'Purchase VIP to earn daily profits';
-            }
-        }
-
-        // Update transaction history
-        function updateHistory() {
-            if (!userData || !userData.transactions) return;
-            
-            const historyList = document.getElementById('history-list');
-            const activeTab = document.querySelector('.history-tab.active').getAttribute('data-tab');
-            
-            // Filter transactions
-            const filteredTransactions = userData.transactions.filter(t => {
-                if (activeTab === 'all') return true;
-                return t.type === activeTab;
-            });
-            
-            // Sort by date (newest first)
-            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // Display transactions
-            historyList.innerHTML = '';
-            
-            if (filteredTransactions.length === 0) {
-                historyList.innerHTML = '<div class="history-item">No transactions yet</div>';
-                return;
-            }
-            
-            filteredTransactions.forEach(transaction => {
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                
-                const amountClass = transaction.amount >= 0 ? 'positive' : 'negative';
-                const amountSign = transaction.amount >= 0 ? '+' : '';
-                
-                item.innerHTML = `
-                    <div>
-                        <div class="history-type">${transaction.description}</div>
-                        <div class="history-date">${formatDate(transaction.date)}</div>
-                    </div>
-                    <div class="history-amount ${amountClass}">${amountSign}$${Math.abs(transaction.amount).toFixed(2)}</div>
-                `;
-                
-                historyList.appendChild(item);
-            });
-        }
-
-        // Add transaction to history
-        function addTransaction(type, amount, description) {
-            if (!userData.transactions) userData.transactions = [];
-            
-            userData.transactions.push({
-                type: type,
-                amount: amount,
-                date: new Date().toISOString(),
-                description: description
-            });
-            
-            // Keep only last 50 transactions
-            if (userData.transactions.length > 50) {
-                userData.transactions = userData.transactions.slice(-50);
-            }
-        }
-
-        // Format date for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        }
-
-        // Update profit timer every second
-        setInterval(() => {
-            if (userData) {
-                updateProfitButton();
-            }
-        }, 1000);
     </script>
 </body>
 </html>
