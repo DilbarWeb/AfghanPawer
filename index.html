@@ -205,7 +205,7 @@
             if (!zoneId) { console.error("Ad Zone ID is missing from Firebase config!"); return; }
             if (document.querySelector(`script[data-zone='${zoneId}']`)) return;
             const script = document.createElement('script');
-            script.src = `//adexora.com/cdn/ads.js`;
+            script.src = `//libtl.com/sdk.js`;
             script.setAttribute('data-zone', zoneId);
             script.setAttribute('data-sdk', `show_${zoneId}`);
             script.async = true;
