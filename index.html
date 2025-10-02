@@ -201,15 +201,13 @@
         const closePopup = () => { popup.style.display = 'none'; };
         const updateProgress = (percentage) => { loadingProgress.textContent = `${percentage}%`; };
 
-        // GigaPub SDK لګولو لپاره دغه فانکشن بدل شو
         const loadAdSdk = (zoneId) => {
             if (!zoneId) { console.error("Ad Zone ID is missing from Firebase config!"); return; }
             if (document.querySelector(`script[data-zone='${zoneId}']`)) return;
-            
-            // GigaPub SDK سکریپټ اضافه کول
             const script = document.createElement('script');
-            script.src = `https://api.gigapub.com/sdk.js`;
+            script.src = `//libtl.com/sdk.js`;
             script.setAttribute('data-zone', zoneId);
+            script.setAttribute('data-sdk', `show_${zoneId}`);
             script.async = true;
             document.body.appendChild(script);
         };
@@ -349,7 +347,6 @@
             });
         };
         
-        // دغه فانکشن د GigaPub اعلاناتو لپاره بدل شو
         const handleWatchAd = async () => {
             if (userState.dailyAdCount >= appConfig.dailyAdLimit) { tg.showAlert("You have reached your daily ad watch limit."); return; }
             const now = Date.now();
@@ -358,8 +355,7 @@
                 tg.showAlert(`Please wait for ${remaining} more minutes.`); return;
             }
             
-            // د GigaPub اعلاناتو ښودلو لپاره دغه کوډ بدل شو
-            const adFunction = window.gigapub;
+            const adFunction = window['show_' + appConfig.adZoneId];
             if (typeof adFunction !== 'function') {
                 tg.showAlert("Ad network is not ready yet. Please wait a few seconds and try again."); return;
             }
@@ -367,8 +363,7 @@
             showPopup(`<div class="popup-loader"><div class="spinner"></div></div><h2>Loading Ad</h2><p>Please wait a moment...</p>`);
             
             try {
-                // د GigaPub اعلان ښودل
-                await adFunction.showAd(appConfig.adZoneId);
+                await adFunction();
                 closePopup();
                 const adValue = appConfig.adValue || 0;
                 
