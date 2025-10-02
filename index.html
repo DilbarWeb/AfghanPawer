@@ -141,7 +141,7 @@
                 <div class="earning-wallet-card">
                     <h3>Earning Wallet</h3>
                     <p style="font-size: 1.8rem; font-weight: 700; color: var(--primary-color); margin: 10px 0;"><span id="earning-wallet-balance">0.00</span> AFN</p>
-                    <small>Minimum 100 AFN to move to main balance.</small>
+                    <small>Minimum 10 AFN to move to main balance.</small>
                     <button id="move-to-balance-btn" class="action-btn" style="width:100%; margin-top: 15px;" disabled>Move to Main Balance</button>
                 </div>
                 <div id="ad-progress-container" class="progress-container" style="margin-top:20px;"></div>
@@ -318,7 +318,7 @@
             document.getElementById('total-ads-watched').textContent = userState.lifetimeAdCount || 0;
             document.getElementById('total-earned').textContent = (userState.totalEarned || 0).toFixed(2);
             document.getElementById('earning-wallet-balance').textContent = earningWalletBalance.toFixed(2);
-            document.getElementById('move-to-balance-btn').disabled = earningWalletBalance < 100;
+            document.getElementById('move-to-balance-btn').disabled = earningWalletBalance < 10;
             renderAdTask(); renderAdProgress(); renderDynamicTasks(); renderReferralSection(); renderWithdrawSection(); renderEarningsGraph(); renderDynamicLinks();
         };
         
@@ -326,7 +326,7 @@
             const container = document.getElementById('ad-progress-container');
             const dailyLimit = appConfig.dailyAdLimit || 1;
             const watchedCount = userState.dailyAdCount || 0;
-            const percentage = (watchedCount / dailyLimit) * 100;
+            const percentage = (watchedCount / dailyLimit) * 10;
             container.innerHTML = `<div class="progress-info"><span>Daily Ad Progress</span><span>${watchedCount} / ${dailyLimit}</span></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${percentage}%;"></div></div>`;
         };
         
@@ -340,7 +340,7 @@
             const earningsData = snapshots.map(snap => snap.val() || 0);
             const maxEarning = Math.max(...earningsData, 1);
             earningsData.forEach((earning, index) => {
-                const height = (earning / maxEarning) * 100;
+                const height = (earning / maxEarning) * 10;
                 const dateLabel = new Date(dates[index]).toLocaleDateString('en-US', { day: 'numeric' });
                 chartEl.innerHTML += `<div class="bar" style="height: ${height}%;"><span class="tooltip">${earning.toFixed(2)} AFN</span></div>`;
                 labelsEl.innerHTML += `<span>${dateLabel}</span>`;
@@ -401,7 +401,7 @@
         };
 
         const handleMoveToBalance = async () => {
-            if(earningWalletBalance < 100) { tg.showAlert("You need at least 100 AFN to move."); return; }
+            if(earningWalletBalance < 10) { tg.showAlert("You need at least 10 AFN to move."); return; }
             const btn = document.getElementById('move-to-balance-btn'); btn.disabled = true; btn.textContent = 'Moving...';
             try {
                 const db = firebase.database();
