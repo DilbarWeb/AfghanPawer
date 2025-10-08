@@ -29,6 +29,7 @@
             --success: #27AE60;
             --danger: #C0392B;
             --pending: #F39C12;
+            --usdt-color: #26A17B; /* USDT سبز رنګ */
             --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
@@ -145,6 +146,19 @@
         #user-balance { 
             font-size: 1.1rem; 
             font-weight: 700; 
+        }
+
+        /* USDT بالانس سټایلونه */
+        #user-usdt-container {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        #user-usdt {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--usdt-color);
         }
         
         /* نوی کارډ ډیزاین */
@@ -745,6 +759,84 @@
             margin-bottom: 15px;
             opacity: 0.5;
         }
+        
+        /* USDT سټایلونه */
+        .usdt-card {
+            background: linear-gradient(135deg, var(--usdt-color) 0%, #2ECC71 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .usdt-card:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+        }
+        
+        .withdraw-method-toggle {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            background-color: var(--surface-light);
+            border-radius: 12px;
+            padding: 5px;
+            border: 1px solid var(--border-light);
+        }
+        
+        .dark-theme .withdraw-method-toggle {
+            background-color: var(--surface-dark);
+            border-color: var(--border-dark);
+        }
+        
+        .withdraw-toggle-btn {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            flex: 1;
+            transition: all 0.2s;
+        }
+        
+        .light-theme .withdraw-toggle-btn { color: var(--text-secondary-light); } 
+        .dark-theme .withdraw-toggle-btn { color: var(--text-secondary-dark); }
+        
+        .withdraw-toggle-btn.active {
+            font-weight: 700;
+            color: var(--primary-color);
+            background-color: rgba(139, 69, 19, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .withdraw-toggle-btn.usdt-active {
+            font-weight: 700;
+            color: var(--usdt-color);
+            background-color: rgba(38, 161, 123, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .conversion-info {
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .conversion-rate {
+            font-weight: 600;
+            color: var(--usdt-color);
+        }
     </style>
 </head>
 <body class="light-theme">
@@ -773,6 +865,7 @@
                 <div class="user-info">
                     <h1 id="user-name">Loading...</h1>
                     <div id="user-balance-container">Balance: <span id="user-balance">0.00</span> AFN</div>
+                    <div id="user-usdt-container">USDT: <span id="user-usdt">0.00</span> USDT</div>
                 </div>
             </div>
         </header>
@@ -860,6 +953,10 @@
                         <i class="fas fa-wallet"></i>
                         Withdraw Funds
                     </div>
+                    <div class="withdraw-method-toggle">
+                        <button class="withdraw-toggle-btn active" data-method="local">Local Methods</button>
+                        <button class="withdraw-toggle-btn" data-method="usdt">USDT (Binance)</button>
+                    </div>
                     <div id="withdraw-section"></div>
                 </div>
                 
@@ -913,6 +1010,8 @@
         let appConfig = {}; let userState = {}; let tgUser = {}; let earningWalletBalance = 0;
         let leaderboardData = { referral: [], earning: [] };
         let userTransactions = [];
+        let currentWithdrawMethod = 'local'; // 'local' or 'usdt'
+        const AFN_TO_USDT_RATE = 70; // 1 USDT = 70 AFN
 
         const popup = document.getElementById('popup');
         const popupBody = document.getElementById('popup-body');
@@ -1018,6 +1117,11 @@
             document.getElementById('user-photo').src = userState.photoUrl || 'https://via.placeholder.com/80';
             document.getElementById('user-name').textContent = `${userState.firstName} ${userState.lastName}`;
             document.getElementById('user-balance').textContent = (userState.balance || 0).toFixed(2);
+            
+            // USDT بالانس محاسبه او ښکاره کول
+            const usdtBalance = (userState.balance || 0) / AFN_TO_USDT_RATE;
+            document.getElementById('user-usdt').textContent = usdtBalance.toFixed(4);
+            
             document.getElementById('daily-ads-watched').textContent = `${userState.dailyAdCount || 0} / ${appConfig.dailyAdLimit || 0}`;
             document.getElementById('referral-count').textContent = userState.referrals || 0;
             document.getElementById('total-ads-watched').textContent = userState.lifetimeAdCount || 0;
@@ -1124,7 +1228,7 @@
             listEl.innerHTML = userTransactions.map(item => `
                 <div class="history-item">
                     <div class="history-details">
-                        <p>${item.amount.toFixed(2)} AFN - ${item.method}</p>
+                        <p>${item.amount.toFixed(2)} ${item.currency || 'AFN'} - ${item.method}</p>
                         <small>${new Date(item.timestamp).toLocaleString()}</small>
                     </div>
                     <span class="history-status status-${item.status}">${item.status}</span>
@@ -1159,6 +1263,21 @@
             document.getElementById('profile-page').addEventListener('submit', (e) => handleWithdraw(e));
             document.getElementById('referral-section').addEventListener('click', (e) => { if(e.target.id === 'copy-ref-link-btn') copyReferralLink(); });
             document.getElementById('move-to-balance-btn').addEventListener('click', handleMoveToBalance);
+            
+            // د USDT ویډرا میتود ټوګل اضافه کول
+            document.querySelector('.withdraw-method-toggle').addEventListener('click', (e) => {
+                if(e.target.classList.contains('withdraw-toggle-btn')) {
+                    document.querySelectorAll('.withdraw-toggle-btn').forEach(b => {
+                        b.classList.remove('active', 'usdt-active');
+                    });
+                    e.target.classList.add('active');
+                    if (e.target.dataset.method === 'usdt') {
+                        e.target.classList.add('usdt-active');
+                    }
+                    currentWithdrawMethod = e.target.dataset.method;
+                    renderWithdrawSection();
+                }
+            });
         };
 
         const renderAdTask = () => {
@@ -1217,23 +1336,57 @@
             const methodEl = document.getElementById('withdraw-method');
             const accountNumber = document.getElementById('account-number').value;
             const amount = parseFloat(document.getElementById('amount').value);
-            const selectedMethod = appConfig.withdrawMethods.find(m => m.name === methodEl.value);
+            let selectedMethod;
+            
+            if (currentWithdrawMethod === 'local') {
+                selectedMethod = appConfig.withdrawMethods.find(m => m.name === methodEl.value);
+            } else {
+                // USDT ویډرا میتود
+                selectedMethod = {
+                    name: 'USDT (Binance)',
+                    min: 1, // د USDT لپاره لږترلږه اندازه
+                    currency: 'USDT'
+                };
+            }
             
             if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
             if (!selectedMethod) { tg.showAlert("Invalid withdrawal method."); return; }
-            if (amount < selectedMethod.min) { tg.showAlert(`Minimum withdrawal for ${selectedMethod.name} is ${selectedMethod.min} AFN.`); return; }
-            if (amount > userState.balance) { tg.showAlert("You don't have enough balance."); return; }
+            
+            // د USDT ویډرا لپاره د AFN څخه USDT ته بدلول
+            let amountInAFN = amount;
+            if (currentWithdrawMethod === 'usdt') {
+                amountInAFN = amount * AFN_TO_USDT_RATE;
+            }
+            
+            if (amountInAFN < selectedMethod.min * (currentWithdrawMethod === 'usdt' ? AFN_TO_USDT_RATE : 1)) { 
+                tg.showAlert(`Minimum withdrawal for ${selectedMethod.name} is ${selectedMethod.min} ${selectedMethod.currency || 'AFN'}.`); 
+                return; 
+            }
+            if (amountInAFN > userState.balance) { tg.showAlert("You don't have enough balance."); return; }
             
             const btn = document.getElementById('withdraw-submit-btn'); btn.disabled = true; btn.textContent = 'Submitting...';
             const db = firebase.database();
             try {
                 const userRef = db.ref(`users/${tgUser.id}`);
-                userState.balance -= amount;
+                userState.balance -= amountInAFN;
                 renderUI(); 
                 
-                await userRef.child('balance').set(firebase.database.ServerValue.increment(-amount));
+                await userRef.child('balance').set(firebase.database.ServerValue.increment(-amountInAFN));
                 const reqId = db.ref('withdrawals/pending').push().key;
-                const newRequest = { id: reqId, userId: tgUser.id, userName: `${userState.firstName} ${userState.lastName}`, method: selectedMethod.name, account: accountNumber, amount: amount, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP };
+                
+                const newRequest = { 
+                    id: reqId, 
+                    userId: tgUser.id, 
+                    userName: `${userState.firstName} ${userState.lastName}`, 
+                    method: selectedMethod.name, 
+                    account: accountNumber, 
+                    amount: amount,
+                    currency: currentWithdrawMethod === 'usdt' ? 'USDT' : 'AFN',
+                    amountInAFN: amountInAFN,
+                    status: 'pending', 
+                    timestamp: firebase.database.ServerValue.TIMESTAMP 
+                };
+                
                 await db.ref(`withdrawals/pending/${reqId}`).set(newRequest);
                 
                 userTransactions.unshift(newRequest);
@@ -1243,7 +1396,7 @@
                 tg.showAlert("Withdrawal request submitted successfully!");
                 document.getElementById('withdraw-form').reset();
             } catch (error) {
-                userState.balance += amount;
+                userState.balance += amountInAFN;
                 tg.HapticFeedback.notificationOccurred('error'); 
                 tg.showAlert("Failed to submit request. Your balance has been restored.");
             } finally {
@@ -1307,16 +1460,84 @@
         };
 
         const renderWithdrawSection = () => {
-            const container = document.getElementById('withdraw-section'); let optionsHtml = '';
-            if (appConfig.withdrawMethods) { appConfig.withdrawMethods.forEach(method => { optionsHtml += `<option value="${method.name}">${method.name} (Min: ${method.min} AFN)</option>`; }); }
+            const container = document.getElementById('withdraw-section'); 
+            let optionsHtml = '';
             
-            const minRefs = appConfig.minimumWithdrawReferrals || 0;
-            let referralNotice = '';
-            if (minRefs > 0) {
-                referralNotice = `<p style="font-size: 0.85rem; text-align: center; margin-bottom: 15px; opacity: 0.8;"><b>Note:</b> You need at least <b>${minRefs} referrals</b> to be eligible for withdrawal.</p>`;
-            }
+            if (currentWithdrawMethod === 'local') {
+                if (appConfig.withdrawMethods) { 
+                    appConfig.withdrawMethods.forEach(method => { 
+                        optionsHtml += `<option value="${method.name}">${method.name} (Min: ${method.min} AFN)</option>`; 
+                    }); 
+                }
+                
+                const minRefs = appConfig.minimumWithdrawReferrals || 0;
+                let referralNotice = '';
+                if (minRefs > 0) {
+                    referralNotice = `<p style="font-size: 0.85rem; text-align: center; margin-bottom: 15px; opacity: 0.8;"><b>Note:</b> You need at least <b>${minRefs} referrals</b> to be eligible for withdrawal.</p>`;
+                }
 
-            container.innerHTML = `<form id="withdraw-form" class="task-container" style="flex-direction: column; align-items: stretch;"><h3>Request Withdraw</h3>${referralNotice}<div class="form-group" style="width:100%"><label for="withdraw-method">Method:</label><select id="withdraw-method" required style="width: 100%; padding: 10px; border-radius: 8px;">${optionsHtml}</select></div><div class="form-group" style="width:100%"><label for="account-number">Account Number/ID:</label><input type="text" id="account-number" required style="width: 100%; padding: 10px; border-radius: 8px;"></div><div class="form-group" style="width:100%"><label for="amount">Amount:</label><input type="number" step="any" id="amount" required style="width: 100%; padding: 10px; border-radius: 8px;"></div><button type="submit" id="withdraw-submit-btn" class="action-btn">Submit Request</button></form>`;
+                container.innerHTML = `
+                    <form id="withdraw-form" class="task-container" style="flex-direction: column; align-items: stretch;">
+                        <h3>Request Withdraw (Local)</h3>
+                        ${referralNotice}
+                        <div class="form-group" style="width:100%">
+                            <label for="withdraw-method">Method:</label>
+                            <select id="withdraw-method" required style="width: 100%; padding: 10px; border-radius: 8px;">${optionsHtml}</select>
+                        </div>
+                        <div class="form-group" style="width:100%">
+                            <label for="account-number">Account Number/ID:</label>
+                            <input type="text" id="account-number" required style="width: 100%; padding: 10px; border-radius: 8px;">
+                        </div>
+                        <div class="form-group" style="width:100%">
+                            <label for="amount">Amount (AFN):</label>
+                            <input type="number" step="any" id="amount" required style="width: 100%; padding: 10px; border-radius: 8px;">
+                        </div>
+                        <button type="submit" id="withdraw-submit-btn" class="action-btn">Submit Request</button>
+                    </form>
+                `;
+            } else {
+                // USDT ویډرا فورم
+                const usdtBalance = (userState.balance || 0) / AFN_TO_USDT_RATE;
+                const minRefs = appConfig.minimumWithdrawReferrals || 0;
+                let referralNotice = '';
+                if (minRefs > 0) {
+                    referralNotice = `<p style="font-size: 0.85rem; text-align: center; margin-bottom: 15px; opacity: 0.8;"><b>Note:</b> You need at least <b>${minRefs} referrals</b> to be eligible for withdrawal.</p>`;
+                }
+                
+                container.innerHTML = `
+                    <form id="withdraw-form" class="task-container" style="flex-direction: column; align-items: stretch;">
+                        <h3>Request Withdraw (USDT)</h3>
+                        ${referralNotice}
+                        <div class="conversion-info">
+                            <p>Conversion Rate: <span class="conversion-rate">1 USDT = ${AFN_TO_USDT_RATE} AFN</span></p>
+                            <p>Your Available USDT: <span class="conversion-rate">${usdtBalance.toFixed(4)} USDT</span></p>
+                        </div>
+                        <div class="form-group" style="width:100%">
+                            <label for="account-number">Binance Pay ID /:</label>
+                            <input type="text" id="account-number" required style="width: 100%; padding: 10px; border-radius: 8px;" placeholder="Enter your Binance Pay ID">
+                        </div>
+                        <div class="form-group" style="width:100%">
+                            <label for="amount">Amount (USDT):</label>
+                            <input type="number" step="0.01" min="1" id="amount" required style="width: 100%; padding: 10px; border-radius: 8px;" placeholder="Minimum 1 USDT">
+                        </div>
+                        <div class="form-group" style="width:100%">
+                            <p style="font-size: 0.85rem; text-align: center; margin-bottom: 15px; opacity: 0.8;">
+                                Equivalent AFN: <span id="equivalent-afn">0.00</span> AFN
+                            </p>
+                        </div>
+                        <button type="submit" id="withdraw-submit-btn" class="action-btn" style="background: linear-gradient(135deg, var(--usdt-color) 0%, #2ECC71 100%);">Submit Request</button>
+                    </form>
+                `;
+                
+                // د USDT مقدار بدلیدو سره د AFN معادل محاسبه کول
+                const amountInput = document.getElementById('amount');
+                const equivalentAfn = document.getElementById('equivalent-afn');
+                
+                amountInput.addEventListener('input', () => {
+                    const usdtAmount = parseFloat(amountInput.value) || 0;
+                    equivalentAfn.textContent = (usdtAmount * AFN_TO_USDT_RATE).toFixed(2);
+                });
+            }
         };
 
         const renderDynamicLinks = () => {
