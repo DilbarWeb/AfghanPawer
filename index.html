@@ -837,6 +837,33 @@
             font-weight: 600;
             color: var(--usdt-color);
         }
+        
+        /* نوی اضافه شوي سټایلونه */
+        .verified-badge {
+            color: #1DA1F2;
+            margin-left: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .withdrawal-notice {
+            background: linear-gradient(135deg, #F39C12 0%, #F1C40F 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .channel-verified {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--success);
+        }
     </style>
 </head>
 <body class="light-theme">
@@ -1115,7 +1142,14 @@
         
         const renderUI = () => {
             document.getElementById('user-photo').src = userState.photoUrl || 'https://via.placeholder.com/80';
-            document.getElementById('user-name').textContent = `${userState.firstName} ${userState.lastName}`;
+            
+            // د تلګرام یوزرنیم سره تایید بېج اضافه کول
+            const userNameElement = document.getElementById('user-name');
+            userNameElement.textContent = `${userState.firstName} ${userState.lastName}`;
+            if (userState.username) {
+                userNameElement.innerHTML = `${userState.firstName} ${userState.lastName} <i class="fas fa-check-circle verified-badge"></i>`;
+            }
+            
             document.getElementById('user-balance').textContent = (userState.balance || 0).toFixed(2);
             
             // USDT بالانس محاسبه او ښکاره کول
@@ -1393,7 +1427,18 @@
                 renderWithdrawalHistory(); 
 
                 tg.HapticFeedback.notificationOccurred('success');
-                tg.showAlert("Withdrawal request submitted successfully!");
+                
+                // د ویډرا تایید پیغام ښکاره کول
+                showPopup(`
+                    <h2>Withdrawal Request Submitted!</h2>
+                    <p>Your withdrawal request for <strong>${amount} ${currentWithdrawMethod === 'usdt' ? 'USDT' : 'AFN'}</strong> has been submitted successfully.</p>
+                    <div class="withdrawal-notice">
+                        <i class="fas fa-clock"></i>
+                        <p>Your withdrawal will be processed within <strong>24 to 72 hours</strong>.</p>
+                    </div>
+                    <button class="popup-close-btn">OK</button>
+                `);
+                
                 document.getElementById('withdraw-form').reset();
             } catch (error) {
                 userState.balance += amountInAFN;
@@ -1433,7 +1478,13 @@
             data.forEach((user, index) => {
                 const score = activeBoard === 'referral' ? (user.referrals || 0) : (user.totalEarned || 0).toFixed(2);
                 const item = document.createElement('li'); item.className = 'leaderboard-item';
-                item.innerHTML = `<span class="rank">#${index + 1}</span><img src="${user.photoUrl || 'https://via.placeholder.com/40'}" alt="User"><span class="leaderboard-name">${user.firstName}</span><span class="leaderboard-score">${score}</span>`;
+                
+                // د تلګرام یوزرنیم سره تایید بېج اضافه کول
+                const userName = user.username ? 
+                    `${user.firstName} <i class="fas fa-check-circle verified-badge"></i>` : 
+                    user.firstName;
+                
+                item.innerHTML = `<span class="rank">#${index + 1}</span><img src="${user.photoUrl || 'https://via.placeholder.com/40'}" alt="User"><span class="leaderboard-name">${userName}</span><span class="leaderboard-score">${score}</span>`;
                 listEl.appendChild(item);
             });
         };
@@ -1447,7 +1498,22 @@
                 tasks.forEach(task => {
                     const isCompleted = userState.completedTasks && userState.completedTasks[task.key];
                     const el = document.createElement('div'); el.className = 'task-container';
-                    el.innerHTML = `<img class="task-icon-img" src="${task.icon}" alt="icon"><div class="task-info"><h3>${task.name}</h3><p>Get ${task.reward} bonus AFN.</p></div><button class="action-btn" data-task-id="${task.key}" data-task-url="${task.url}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? 'Claimed' : 'Claim Bonus'}</button>`;
+                    
+                    // د چینل نوم سره تایید بېج اضافه کول
+                    const taskInfo = `
+                        <img class="task-icon-img" src="${task.icon}" alt="icon">
+                        <div class="task-info">
+                            <h3>${task.name}</h3>
+                            <p>Get ${task.reward} bonus AFN.</p>
+                            <div class="channel-verified">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Verified Channel</span>
+                            </div>
+                        </div>
+                        <button class="action-btn" data-task-id="${task.key}" data-task-url="${task.url}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? 'Claimed' : 'Claim Bonus'}</button>
+                    `;
+                    
+                    el.innerHTML = taskInfo;
                     container.appendChild(el);
                 });
             }
